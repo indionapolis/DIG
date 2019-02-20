@@ -1,0 +1,2 @@
+# DIG
+Division into groups
