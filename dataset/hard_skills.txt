@@ -1,0 +1,11 @@
+SQL
+JAVA
+JavaScript
+Microsoft C#
+Linux
+.NET Programming
+Oracle
+C++
+Python
+XML
+Web
