@@ -7,6 +7,7 @@ import os
 from flask_cors import CORS
 
 UPLOAD_FOLDER = './uploads'
+WORKING_FOLDER = './working'
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -54,6 +55,7 @@ def get_meta():
             colums=list(df.keys())
         )
 
+        os.rename(f'{UPLOAD_FOLDER}/{file}', f'{WORKING_FOLDER}/{file}')
         return Response(json.dumps(result), status=200)
     else:
         return Response(status=404)
@@ -62,8 +64,12 @@ def get_meta():
 @app.route('/divide_into_groups', methods=['POST'])
 def divide_into_groups():
     if request.method == 'POST':
-        result = json.loads(request.data)
-        print(json.dumps(result, indent=4))
+        projects = json.loads(request.data)
+        # TODO algorithm
+
+        for project in projects:
+            for team in project['teams']:
+                print(team["skills"])
 
     return Response(status=200)
 
