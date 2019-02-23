@@ -31,7 +31,7 @@ def upload_file():
         file = request.files['file']
 
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = file.filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect('/meta')
 
@@ -70,18 +70,18 @@ def divide_into_groups():
 
     for file in os.listdir(WORKING_FOLDER):
         if not allowed_file(file): continue
+
         df = pd.read_excel(f'{UPLOAD_FOLDER}/{file}')
 
         for project in projects:
             for team in project['teams']:
                 print(team["skills"])
 
+
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(status=200)
     else:
         return Response(status=404)
-
-
 
 
 @app.route('/', defaults={'path': ''})
