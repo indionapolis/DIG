@@ -1,7 +1,6 @@
 import json
 
-from flask import Flask, request, Response, redirect
-from werkzeug.utils import secure_filename
+from flask import Flask, request, Response, redirect, send_from_directory
 import pandas as pd
 import os
 from flask_cors import CORS
@@ -66,22 +65,43 @@ def get_meta():
 @app.route('/divide_into_groups', methods=['POST'])
 def divide_into_groups():
     projects = json.loads(request.data)
-    # TODO algorithm
 
     for file in os.listdir(WORKING_FOLDER):
         if not allowed_file(file): continue
 
-        df = pd.read_excel(f'{UPLOAD_FOLDER}/{file}')
+        df = pd.read_excel(f'{WORKING_FOLDER}/{file}')
+        df['project'] = ['' for i in range(len(df))]
 
-        for project in projects:
-            for team in project['teams']:
-                print(team["skills"])
+        # TODO algorithm
+        # for project in projects:
+        #     for item in df:
+        #         item
+        #     for team in project['teams']:
+        #         print(team["skills"])
 
+        writer_orig = pd.ExcelWriter(f'{WORKING_FOLDER}/{file}', engine='xlsxwriter')
+        df.to_excel(writer_orig)
+        writer_orig.save()
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
-        return Response(status=200)
+        return Response(json.dumps(projects), status=200)
     else:
         return Response(status=404)
+
+
+@app.route('/download', methods=['GET'])
+def download():
+    fn = ''
+    try:
+        for file in os.listdir(RESULT_FOLDER):
+            if not allowed_file(file): continue
+            fn = file
+            return send_from_directory(RESULT_FOLDER, file)
+        else:
+            return Response(status=404)
+    finally:
+        pass
+        # os.remove(f'{RESULT_FOLDER}/{fn}')
 
 
 @app.route('/', defaults={'path': ''})
