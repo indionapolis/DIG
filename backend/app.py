@@ -4,11 +4,14 @@ from flask import Flask, request, Response, redirect
 from werkzeug.utils import secure_filename
 import pandas as pd
 import os
+from flask_cors import CORS
 
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
+
+CORS(app)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -59,7 +62,10 @@ def get_meta():
 @app.route('/divide_into_groups', methods=['POST'])
 def divide_into_groups():
     if request.method == 'POST':
-        print(request.data)
+        result = json.loads(request.data)
+        print(json.dumps(result, indent=4))
+
+    return Response(status=200)
 
 
 @app.route('/', defaults={'path': ''})
