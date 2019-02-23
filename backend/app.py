@@ -53,7 +53,7 @@ def get_meta():
         result = dict(
             name=file,
             len=len(df),
-            colums=list(df.keys())
+            columns=list(df.keys())
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{file}', f'{WORKING_FOLDER}/{file}')
