@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import pandas as pd
 import os
 
-UPLOAD_FOLDER = './backend/uploads'
+UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -66,3 +66,7 @@ def divide_into_groups():
 @app.route('/<path:path>')
 def catch_all(path):
     return Response('You want path: %s' % path, status=404)
+
+
+if __name__ == '__main__':
+    app.run()
