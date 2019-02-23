@@ -8,6 +8,7 @@ from flask_cors import CORS
 
 UPLOAD_FOLDER = './uploads'
 WORKING_FOLDER = './working'
+RESULT_FOLDER = './results'
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -48,6 +49,7 @@ def upload_file():
 @app.route('/meta', methods=['GET'])
 def get_meta():
     for file in os.listdir(UPLOAD_FOLDER):
+        if not allowed_file(file): continue
         df = pd.read_excel(f'{UPLOAD_FOLDER}/{file}')
         result = dict(
             name=file,
@@ -63,15 +65,23 @@ def get_meta():
 
 @app.route('/divide_into_groups', methods=['POST'])
 def divide_into_groups():
-    if request.method == 'POST':
-        projects = json.loads(request.data)
-        # TODO algorithm
+    projects = json.loads(request.data)
+    # TODO algorithm
+
+    for file in os.listdir(WORKING_FOLDER):
+        if not allowed_file(file): continue
+        df = pd.read_excel(f'{UPLOAD_FOLDER}/{file}')
 
         for project in projects:
             for team in project['teams']:
                 print(team["skills"])
 
-    return Response(status=200)
+        os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
+        return Response(status=200)
+    else:
+        return Response(status=404)
+
+
 
 
 @app.route('/', defaults={'path': ''})
