@@ -53,7 +53,7 @@ def get_meta():
         result = dict(
             name=file,
             len=len(df),
-            colums=list(df.keys())
+            columns=list(df.keys())
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{file}', f'{WORKING_FOLDER}/{file}')
@@ -93,11 +93,9 @@ def divide_into_groups():
 def download():
     for file in os.listdir(RESULT_FOLDER):
         if not allowed_file(file): continue
-        fn = file
         return send_from_directory(RESULT_FOLDER, file)
     else:
         return Response(status=404)
-
 
 
 @app.route('/', defaults={'path': ''})
