@@ -80,7 +80,7 @@ def divide_into_groups():
         #     for team in project['teams']:
         #         print(team["skills"])
 
-        df.to_excel(f'{WORKING_FOLDER}/{file}')
+        df.to_excel(f'{WORKING_FOLDER}/{file}', index=False)
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(projects), status=200)
@@ -114,4 +114,4 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
-    app.run()
+    app.run(debug=False, host='0.0.0.0', port=5000)
