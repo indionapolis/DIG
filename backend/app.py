@@ -86,7 +86,6 @@ def divide_into_groups():
                     best_person_id = 0
                     best_intersection = 0
                     for i, person in enumerate(df.values.tolist()):
-                        print(person)
 
                         # if person is free
                         if person[3] == '':
