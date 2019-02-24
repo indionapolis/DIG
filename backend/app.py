@@ -91,17 +91,13 @@ def divide_into_groups():
 
 @app.route('/download', methods=['GET'])
 def download():
-    fn = ''
-    try:
-        for file in os.listdir(RESULT_FOLDER):
-            if not allowed_file(file): continue
-            fn = file
-            return send_from_directory(RESULT_FOLDER, file)
-        else:
-            return Response(status=404)
-    finally:
-        pass
-        # os.remove(f'{RESULT_FOLDER}/{fn}')
+    for file in os.listdir(RESULT_FOLDER):
+        if not allowed_file(file): continue
+        fn = file
+        return send_from_directory(RESULT_FOLDER, file)
+    else:
+        return Response(status=404)
+
 
 
 @app.route('/', defaults={'path': ''})
@@ -110,5 +106,14 @@ def catch_all(path):
     return Response('You want path: %s' % path, status=404)
 
 
+def drop_all_files():
+    folders = [UPLOAD_FOLDER, WORKING_FOLDER, RESULT_FOLDER]
+    for folder in folders:
+        for file in os.listdir(folder):
+            if not allowed_file(file): continue
+            os.remove(f'{folder}/{file}')
+
+
 if __name__ == '__main__':
+    drop_all_files()
     app.run()
