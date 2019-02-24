@@ -1,3 +1,21 @@
-.data_upload {
-  
+.meta_info {
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+}
+
+.meta_info_element {
+  color: #2f2f2f;
+  padding: 2px;
+  margin-left: 15px;
+}
+
+.meta_info_element b {
+  color: #000;
+}
+
+.button_decorated {
+  margin-top: 20px;
+  align-self: flex-start;
 }

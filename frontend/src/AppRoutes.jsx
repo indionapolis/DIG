@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import UploadDataPage from "./components/UploadDataPage";
 import "./App.css";
+
+import UploadDataPage from "./components/UploadDataPage";
+import MetaInfo from "./components/MetaInfo";
+import Configurator from "./components/Configurator";
+import Results from "./components/Results";
 
 class AppRoutes extends Component {
   render() {
@@ -9,11 +13,21 @@ class AppRoutes extends Component {
     let { currentState } = this.props;
 
     if (currentState === "0") {
-      pageName = "0. zero state off-lane";
+      pageName = "1. Upload data";
       content = <UploadDataPage {...this.props} />
+    } else if (currentState === "0.1") {
+      pageName = "1. Amerika sosats";
+      content = <MetaInfo {...this.props} />
+    } else if (currentState === '1') {
+      pageName = "2. Конфигуратор";
+      content = <Configurator {...this.props} />
+    } else if (currentState === '2') {
+      pageName = "3. Результат разделения на команды";
+      content = <Results {...this.props} />
     }
+
     return (
-      <div>
+      <div className="App">
         <div className="header">
           {pageName}
         </div>

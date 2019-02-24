@@ -1,0 +1,48 @@
+.configurator {
+  padding-top: 80px;
+  width: 100%;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  background: #efefef;
+  margin: 10px;
+  padding: 10px;
+}
+
+.project_name {
+  flex: 1;
+  height: 30px;
+  font-size: 14px;
+}
+
+.button_no_margin {
+  margin: 0 10px;
+}
+
+.teams_module {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.team_element {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 calc(50% - 10px);
+  margin: 5px;
+  background-color: #dcdcdc;
+}
+
+.skill {
+  display: inline-block;
+  position: relative;
+  padding: 5px 10px;
+  margin: 2px 5px;
+
+  color: #fff;
+  background: cornflowerblue;
+  width: auto;
+  max-width: 100%;
+  word-wrap: break-word;
+}
