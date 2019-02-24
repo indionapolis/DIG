@@ -8,6 +8,7 @@ from flask_cors import CORS
 UPLOAD_FOLDER = './uploads'
 WORKING_FOLDER = './working'
 RESULT_FOLDER = './results'
+DELETE_FOLDER = './delete'
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -79,9 +80,7 @@ def divide_into_groups():
         #     for team in project['teams']:
         #         print(team["skills"])
 
-        writer_orig = pd.ExcelWriter(f'{WORKING_FOLDER}/{file}', engine='xlsxwriter')
-        df.to_excel(writer_orig)
-        writer_orig.save()
+        df.to_excel(f'{WORKING_FOLDER}/{file}')
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(projects), status=200)
@@ -93,7 +92,8 @@ def divide_into_groups():
 def download():
     for file in os.listdir(RESULT_FOLDER):
         if not allowed_file(file): continue
-        return send_from_directory(RESULT_FOLDER, file)
+        os.rename(f'{RESULT_FOLDER}/{file}', f'{DELETE_FOLDER}/{file}')
+        return send_from_directory(DELETE_FOLDER, file)
     else:
         return Response(status=404)
 
@@ -105,7 +105,7 @@ def catch_all(path):
 
 
 def drop_all_files():
-    folders = [UPLOAD_FOLDER, WORKING_FOLDER, RESULT_FOLDER]
+    folders = [UPLOAD_FOLDER, WORKING_FOLDER, RESULT_FOLDER, DELETE_FOLDER]
     for folder in folders:
         for file in os.listdir(folder):
             if not allowed_file(file): continue
