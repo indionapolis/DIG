@@ -23,26 +23,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
+    file = request.files['file']
 
-    if request.method == 'POST':
-        file = request.files['file']
-
-        if file and allowed_file(file.filename):
-            filename = file.filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect('/meta')
-
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return redirect('/meta')
 
 
 @app.route('/meta', methods=['GET'])
@@ -70,6 +58,8 @@ def divide_into_groups():
         if not allowed_file(file): continue
 
         df = pd.read_excel(f'{WORKING_FOLDER}/{file}')
+        # to send JSON response
+        people = df.to_dict('records')
         df['project'] = ['' for i in range(len(df))]
         df['team'] = ['' for i in range(len(df))]
 
@@ -85,11 +75,11 @@ def divide_into_groups():
                     best_person = None
                     best_person_id = 0
                     best_intersection = 0
-                    for i, person in enumerate(df.values.tolist()):
+                    for i, person in enumerate(df.to_dict('records')):
 
                         # if person is free
-                        if person[3] == '':
-                            person_skills_set = set(person[1].split(', ') + person[2].split(', '))
+                        if person['project'] == '':
+                            person_skills_set = set(person['Hard Skills'].split(', ') + person['Soft Skills'].split(', '))
 
                             # looking for person with biggest skill intersection with project
                             intersection_len = len(person_skills_set.intersection(team_skills_set))
@@ -102,14 +92,13 @@ def divide_into_groups():
                     if best_person:
                         df['project'][best_person_id] = project['name']
                         df['team'][best_person_id] = team['name']
-                        best_person_skills_set = set(best_person[1].split(', ') + best_person[2].split(', '))
+                        best_person_skills_set = set(best_person['Hard Skills'].split(', ') + best_person['Soft Skills'].split(', '))
                         team_skills_set = team_skills_set.difference(best_person_skills_set)
-                        team['members'].append(best_person)
+                        team['members'].append(people[best_person_id])
                     else:
                         # if we did not find more people for project
                         break
 
-        # TODO fit in groups by number of people
         for project in projects:
             for team in project['teams']:
                 team_skills_set = set(team["skills"])
@@ -119,11 +108,11 @@ def divide_into_groups():
                     best_person = None
                     best_person_id = 0
                     best_intersection = 0
-                    for i, person in enumerate(df.values.tolist()):
+                    for i, person in enumerate(df.to_dict('records')):
 
                         # if person is free
-                        if person[3] == '':
-                            person_skills_set = set(person[1].split(', ') + person[2].split(', '))
+                        if person['project'] == '':
+                            person_skills_set = set(person['Hard Skills'].split(', ') + person['Soft Skills'].split(', '))
 
                             # looking for person with biggest skill intersection with project
                             intersection_len = len(person_skills_set.intersection(team_skills_set))
@@ -136,7 +125,7 @@ def divide_into_groups():
                     if best_person:
                         df['project'][best_person_id] = project['name']
                         df['team'][best_person_id] = team['name']
-                        team['members'].append(best_person)
+                        team['members'].append(people[best_person_id])
                     else:
                         # if we did not find more people for project
                         break
@@ -159,6 +148,7 @@ def download():
         return Response(status=404)
 
 
+# TODO 404 handler
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -174,5 +164,5 @@ def drop_all_files():
 
 
 if __name__ == '__main__':
-    # drop_all_files()
+    drop_all_files()
     app.run(debug=False, host='0.0.0.0', port=5000)
