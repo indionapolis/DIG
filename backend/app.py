@@ -109,6 +109,38 @@ def divide_into_groups():
                         # if we did not find more people for project
                         break
 
+        # TODO fit in groups by number of people
+        for project in projects:
+            for team in project['teams']:
+                team_skills_set = set(team["skills"])
+
+                while len(team['members']) != team['size']:
+                    # search for best people for team
+                    best_person = None
+                    best_person_id = 0
+                    best_intersection = 0
+                    for i, person in enumerate(df.values.tolist()):
+
+                        # if person is free
+                        if person[3] == '':
+                            person_skills_set = set(person[1].split(', ') + person[2].split(', '))
+
+                            # looking for person with biggest skill intersection with project
+                            intersection_len = len(person_skills_set.intersection(team_skills_set))
+                            if intersection_len > best_intersection:
+                                best_intersection = intersection_len
+                                best_person = person
+                                best_person_id = i
+
+                    # add best_person to the team
+                    if best_person:
+                        df['project'][best_person_id] = project['name']
+                        df['team'][best_person_id] = team['name']
+                        team['members'].append(best_person)
+                    else:
+                        # if we did not find more people for project
+                        break
+
         df.to_excel(f'{WORKING_FOLDER}/{file}', index=False)
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
