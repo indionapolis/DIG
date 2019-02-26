@@ -40,9 +40,23 @@
   border-style: none;
 }
 
+.button_transparent {
+  border-style: solid;
+  border-width: 2px;
+  border-color: #2db224;
+  color: #2db224;
+  background: #fff;
+}
+
 .button_decorated:hover {
   background: #3b9627;
 }
+
+.button_transparent:hover {
+  color: #fefefe;
+  background: #2db224;
+}
+
 
 button {
   outline: none;

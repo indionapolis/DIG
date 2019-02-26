@@ -104,15 +104,21 @@ class Configurator extends Component {
             </div>
           ))}
         </div>
-        <button className="button_decorated" onClick={this.props.goToPrevState}>
-          Назад
-        </button>
-        <button onClick={this.onProjectAdd} className="button_decorated button_no_margin">
-          Добавить проект
-        </button>
-        <button onClick={this.props.goToRetrieveResults} className="button_decorated button_no_margin">
-          Разделить людей на команды
-        </button>
+        <div className="button_box">
+          <button className="button_decorated button_no_margin"
+                  onClick={this.props.goToPrevState}
+                  style={{width: '80px'}}>
+            Назад
+          </button>
+          <button onClick={this.onProjectAdd}
+                  className="button_decorated button_no_margin"
+                  style={{width: '150px'}}>
+            Добавить проект
+          </button>
+          <button onClick={this.props.goToRetrieveResults} className="button_decorated button_no_margin button_transparent divide">
+            Разделить людей на команды
+          </button>
+        </div>
       </div>
     );
   }
