@@ -21,7 +21,7 @@ class MetaInfo extends Component {
           <button className="button_decorated" onClick={this.props.goToPrevState}>
             Назад
           </button>
-          <button className="button_decorated" onClick={this.props.goToConfig}>
+          <button className="button_decorated button_transparent" onClick={this.props.goToConfig}>
             Перейти к настройке
           </button>
         </div>
