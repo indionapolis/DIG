@@ -21,8 +21,7 @@ for name in name_set:
     shuffle(hard_skills_set)
     data.append([name, ', '.join(soft_skills_set[0:randint(1,3)]), ', '.join(hard_skills_set[0:randint(1,3)])])
 
-
 df = DataFrame(data=data, columns=index)
 
-df.to_excel('sample.xlsx')
+df.to_excel('sample.xlsx', index=False)
 
