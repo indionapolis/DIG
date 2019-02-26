@@ -66,7 +66,7 @@ def divide_into_groups():
         df['project'] = ['' for i in range(len(df))]
         df['team'] = ['' for i in range(len(df))]
 
-        soft_skills = set(open('../dataset/soft_skills.txt').read().split('\n'))
+        soft_skills = set(open('./dataset/soft_skills.txt').read().split('\n'))
 
         for project in projects:
             for team in project['teams']:
