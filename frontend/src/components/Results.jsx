@@ -40,6 +40,16 @@ class Results extends Component {
                     </div>
                   </div>
                   <div style={{padding: "7px 10px"}}>
+                    Скиллы:
+                    <div style={{marginLeft: '22px'}}>
+                      {this.props.resultConfig[projectIndex].teams[teamIndex].skills.map((skillData, skillIndex) => (
+                        <div key={projectIndex + "team" + teamIndex + "skill" + skillIndex} className="card skill">
+                          {skillData}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{padding: "7px 10px"}}>
                     Участники:
                     <div style={{fontWeight: '300', marginLeft: '25px'}}>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].members
@@ -58,7 +68,7 @@ class Results extends Component {
         <button className="button_decorated" onClick={this.props.goToPrevState}>
           Назад
         </button>
-        <button className="button_decorated button_no_margin" onClick={this.onFileDownload}>
+        <button className="button_decorated button_no_margin button_transparent" onClick={this.onFileDownload}>
           Скачать датасет
         </button>
       </div>

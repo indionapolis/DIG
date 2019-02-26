@@ -41,7 +41,7 @@
 }
 
 .button_no_margin {
-  margin: 0 10px;
+  margin: 10px;
 }
 
 .teams_module {
@@ -103,4 +103,15 @@
   width: 120px;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.divide {
+  position: absolute;
+  right: 45px;
+}
+
+.button_box {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
