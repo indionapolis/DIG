@@ -35,7 +35,7 @@ class Configurator extends Component {
   }
 
   onTeamSizeChange(projectIndex, teamIndex, size) {
-    if (size.length > 0) {
+    if (size.length > 0 && !isNaN(size)) {
       size = Number.parseInt(size);
       this.props.onConfigAction("changeTeamSize", {projectIndex, teamIndex, size});
     }
@@ -51,7 +51,9 @@ class Configurator extends Component {
                 <input className="project_name"
                        type="text"
                        placeholder="Введите название проекта"
-                       onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}/>
+                       onKeyPress={(e) => {if (e.key === "Enter") this.onTeamAdd(projectIndex)}}
+                       onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}
+                       value={this.props.config[projectIndex].name} />
                 <button onClick={() => this.onTeamAdd(projectIndex)} className="button_decorated button_no_margin">
                   Добавить команду
                 </button>
@@ -59,13 +61,19 @@ class Configurator extends Component {
               <div className="teams_module">
                 {this.props.config[projectIndex].teams.map((teamData, teamIndex) => (
                   <div key={projectIndex + "team" + teamIndex} className="team_element">
-                    <input type="text"
-                           placeholder={"Команда #" + teamIndex}
-                           onBlur={(e) => this.onTeamNameChange(projectIndex, teamIndex, e.currentTarget.value)} />
                     <div style={{padding: "7px 10px"}}>
-                      Количество людей в команде:
-                      <input type="text" placeholder="#"
-                             onBlur={(e) => this.onTeamSizeChange(projectIndex, teamIndex, e.currentTarget.value)} />
+                      Название:
+                      <input type="text"
+                             placeholder={"Команда #" + teamIndex}
+                             onBlur={(e) => this.onTeamNameChange(projectIndex, teamIndex, e.currentTarget.value)}
+                             value={this.props.config[projectIndex].teams[teamIndex].name} />
+                    </div>
+                    <div style={{padding: "7px 10px"}}>
+                      Размер:
+                      <input type="text" placeholder="0"
+                             onBlur={(e) => this.onTeamSizeChange(projectIndex, teamIndex, e.currentTarget.value)}
+                             className="users_count"
+                             value={this.props.config[projectIndex].teams[teamIndex].size}/>
                     </div>
                     <div style={{padding: "7px 10px"}}>
                       Скиллы:
@@ -75,6 +83,7 @@ class Configurator extends Component {
                         </div>
                       ))}
                       <input type="text"
+                             className="new_skill"
                              placeholder={"Новый скилл"}
                              onBlur={(e) => {
                                if (e.currentTarget.value.length > 0) {
@@ -95,6 +104,9 @@ class Configurator extends Component {
             </div>
           ))}
         </div>
+        <button className="button_decorated" onClick={this.props.goToPrevState}>
+          Назад
+        </button>
         <button onClick={this.onProjectAdd} className="button_decorated button_no_margin">
           Добавить проект
         </button>

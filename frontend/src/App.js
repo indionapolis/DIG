@@ -10,12 +10,15 @@ class App extends Component {
       currentState: "0",
       sample: "kek",
       metadata: null,
-      config: []
+      config: [],
+      resultConfig: []
     };
     this.onUpload = this.onUpload.bind(this);
     this.goToConfig = this.goToConfig.bind(this);
     this.onConfigAction = this.onConfigAction.bind(this);
     this.goToRetrieveResults = this.goToRetrieveResults.bind(this);
+    this.fetchDivisionResult = this.fetchDivisionResult.bind(this);
+    this.goToPrevState = this.goToPrevState.bind(this);
   }
 
   // stage 1
@@ -38,6 +41,30 @@ class App extends Component {
     this.setState({
       currentState: '2'
     })
+  }
+
+  // load data result
+  fetchDivisionResult(data) {
+    this.setState({
+      resultConfig: data
+    })
+  }
+
+  goToPrevState() {
+    let { currentState: state } = this.state;
+    if (state === "2") {
+      this.setState({
+        currentState: "1"
+      })
+    } else if (state === "1") {
+      this.setState({
+        currentState: "0.1"
+      })
+    } else if (state === "0.1") {
+      this.setState({
+        currentState: "0"
+      })
+    }
   }
 
   /**
@@ -85,8 +112,6 @@ class App extends Component {
 
       config[projectIndex].teams[teamIndex].size = size;
     }
-
-    console.log(this.state.config);
   }
 
   render() {
@@ -96,7 +121,9 @@ class App extends Component {
                    onUpload={this.onUpload}
                    goToConfig={this.goToConfig}
                    onConfigAction={this.onConfigAction}
-                   goToRetrieveResults={this.goToRetrieveResults}/>
+                   goToRetrieveResults={this.goToRetrieveResults}
+                   fetchDivisionResult={this.fetchDivisionResult}
+                   goToPrevState={this.goToPrevState} />
       </div>
     );
   }

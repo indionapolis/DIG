@@ -17,9 +17,14 @@ class MetaInfo extends Component {
         <div className="meta_info_element">
           <b>Названия колонок:</b> {this.props.metadata.columns.join(", ")}
         </div>
-        <button className="button_decorated" onClick={this.props.goToConfig}>
-          Перейти к настройке
-        </button>
+        <div>
+          <button className="button_decorated" onClick={this.props.goToPrevState}>
+            Назад
+          </button>
+          <button className="button_decorated" onClick={this.props.goToConfig}>
+            Перейти к настройке
+          </button>
+        </div>
       </div>
     );
   }

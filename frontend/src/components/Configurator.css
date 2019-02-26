@@ -6,15 +6,38 @@
 .project {
   display: flex;
   flex-direction: column;
-  background: #efefef;
+  border-style: solid;
+  border-color: #f4f4f4;
+  border-radius: 5px;
+  border-width: 2px;
   margin: 10px;
   padding: 10px;
+}
+
+.project:hover {
+  box-shadow: 0px 0px 4px rgba(1, 1, 1, 0.05);
+  border-color: rgba(47, 181, 36, 0.41);
+  border-width: 2px;
 }
 
 .project_name {
   flex: 1;
   height: 30px;
   font-size: 14px;
+}
+
+.project input {
+  border-width: 1.7px;
+  border-style: solid;
+  border-color: #efefef;
+  color: #3f3f3f;
+  border-radius: 5px;
+  padding-left: 10px;
+  outline: none;
+}
+
+.project input::placeholder {
+  color: #c3c3c3;
 }
 
 .button_no_margin {
@@ -27,22 +50,57 @@
 }
 
 .team_element {
+  font-weight: 500;
   display: flex;
+  margin: 15px;
+  padding: 10px;
+
   flex-direction: column;
-  flex: 0 1 calc(50% - 10px);
-  margin: 5px;
-  background-color: #dcdcdc;
+  flex: 0 1 calc(33.3333333% - 30px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: #2d2d2d;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+}
+
+.team_element:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.team_element input {
+  height: 27px;
+}
+
+.team_element input {
+  padding: 0;
+  margin-left: 10px;
+  padding-left: 10px;
+}
+
+.users_count {
+  width: 35px!important;
+  text-align: center!important;
+  padding-left: 0!important;
 }
 
 .skill {
   display: inline-block;
   position: relative;
   padding: 5px 10px;
-  margin: 2px 5px;
+  margin: 2px 3px;
 
   color: #fff;
-  background: cornflowerblue;
+  background: #8440ed;
   width: auto;
   max-width: 100%;
   word-wrap: break-word;
+}
+
+.new_skill {
+  width: 120px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

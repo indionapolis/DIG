@@ -2,3 +2,10 @@
   padding-top: 80px;
   width: 100%;
 }
+
+.text {
+  font-size: 23px;
+  font-weight: 600;
+  margin-left: 15px;
+  color: rgba(0, 0, 0, 0.7778);
+}

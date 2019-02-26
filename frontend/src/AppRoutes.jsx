@@ -13,10 +13,10 @@ class AppRoutes extends Component {
     let { currentState } = this.props;
 
     if (currentState === "0") {
-      pageName = "1. Upload data";
+      pageName = "1. Загрузите датасет";
       content = <UploadDataPage {...this.props} />
     } else if (currentState === "0.1") {
-      pageName = "1. Amerika sosats";
+      pageName = "1. Проверьте себя";
       content = <MetaInfo {...this.props} />
     } else if (currentState === '1') {
       pageName = "2. Конфигуратор";
