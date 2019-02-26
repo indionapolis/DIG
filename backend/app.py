@@ -52,6 +52,9 @@ def get_meta():
 
 @app.route('/divide_into_groups', methods=['POST'])
 def divide_into_groups():
+    # TODO greedy on soft skills
+    # TODO round robin distribution
+    # TODO skill priority
     projects = json.loads(request.data)
 
     for file in os.listdir(WORKING_FOLDER):
@@ -63,10 +66,14 @@ def divide_into_groups():
         df['project'] = ['' for i in range(len(df))]
         df['team'] = ['' for i in range(len(df))]
 
+        soft_skills = set(open('../dataset/soft_skills.txt').read().split('\n'))
+
         for project in projects:
             for team in project['teams']:
                 team_skills_set = set(team["skills"])
                 team['members'] = []
+                # in case team do not need soft skills
+                skill_flag = len(soft_skills.intersection(team_skills_set))
 
                 # search for people for team
                 while len(team_skills_set):
@@ -79,12 +86,14 @@ def divide_into_groups():
 
                         # if person is free
                         if person['project'] == '':
-                            person_skills_set = set(person['Hard Skills'].split(', ') + person['Soft Skills'].split(', '))
+                            person_hard_skills_set = set(person['Hard Skills'].split(', '))
+                            person_soft_skills_set = set(person['Soft Skills'].split(', '))
 
                             # looking for person with biggest skill intersection with project
-                            intersection_len = len(person_skills_set.intersection(team_skills_set))
-                            if intersection_len > best_intersection:
-                                best_intersection = intersection_len
+                            hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
+                            soft_intersection_len = len(person_soft_skills_set.intersection(team_skills_set))
+                            if hard_intersection_len > best_intersection and (soft_intersection_len or not skill_flag):
+                                best_intersection = hard_intersection_len
                                 best_person = person
                                 best_person_id = i
 
@@ -92,7 +101,7 @@ def divide_into_groups():
                     if best_person:
                         df['project'][best_person_id] = project['name']
                         df['team'][best_person_id] = team['name']
-                        best_person_skills_set = set(best_person['Hard Skills'].split(', ') + best_person['Soft Skills'].split(', '))
+                        best_person_skills_set = set(best_person['Hard Skills'].split(', '))
                         team_skills_set = team_skills_set.difference(best_person_skills_set)
                         team['members'].append(people[best_person_id])
                     else:
@@ -102,6 +111,8 @@ def divide_into_groups():
         for project in projects:
             for team in project['teams']:
                 team_skills_set = set(team["skills"])
+                # in case team do not need soft skills
+                skill_flag = len(soft_skills.intersection(team_skills_set))
 
                 while len(team['members']) != team['size']:
                     # search for best people for team
@@ -112,12 +123,14 @@ def divide_into_groups():
 
                         # if person is free
                         if person['project'] == '':
-                            person_skills_set = set(person['Hard Skills'].split(', ') + person['Soft Skills'].split(', '))
+                            person_hard_skills_set = set(person['Hard Skills'].split(', '))
+                            person_soft_skills_set = set(person['Soft Skills'].split(', '))
 
                             # looking for person with biggest skill intersection with project
-                            intersection_len = len(person_skills_set.intersection(team_skills_set))
-                            if intersection_len > best_intersection:
-                                best_intersection = intersection_len
+                            hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
+                            soft_intersection_len = len(person_soft_skills_set.intersection(team_skills_set))
+                            if hard_intersection_len > best_intersection and (soft_intersection_len or not skill_flag):
+                                best_intersection = hard_intersection_len
                                 best_person = person
                                 best_person_id = i
 
