@@ -1,33 +1,68 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 .App {
-  text-align: center;
+  font-family: "Helvetica Neue", serif;
+  font-size: 14px;
+  height: 100%;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.header {
+  position: absolute;
+  padding: 20px 45px;
+
+  color: #3f3f3f;
+
+  font-size: 32px;
+  font-family: "Helvetica Neue", serif;
+  font-weight: 300;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.main {
+  padding: 0 45px 0;
+
+  height: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.button_decorated {
+  height: 30px;
+  padding: 3px 15px;
+  font-size: 13px;
+  background: #2db224;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 3px;
+  font-weight: bold;
+
+  border-style: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button_transparent {
+  border-style: solid;
+  border-width: 2px;
+  border-color: #2db224;
+  color: #2db224;
+  background: #fff;
+}
+
+.button_decorated:hover {
+  background: #3b9627;
+}
+
+.button_transparent:hover {
+  color: #fefefe;
+  background: #2db224;
+}
+
+
+button {
+  outline: none;
+}
+
+.card {
+  padding: 10px;
+  border-radius: 5px;
 }

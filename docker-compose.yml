@@ -5,6 +5,9 @@ services:
     ports:
      - "5000:5000"
   frontend:
-    build: ./frontend/
+    build:
+      context: ./frontend/
+      args:
+        - backend_endpoint=http://localhost:5000
     ports:
      - "80:80"

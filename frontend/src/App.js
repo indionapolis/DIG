@@ -1,25 +1,129 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import AppRoutes from "./AppRoutes";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentState: "0",
+      sample: "kek",
+      metadata: null,
+      config: [],
+      resultConfig: []
+    };
+    this.onUpload = this.onUpload.bind(this);
+    this.goToConfig = this.goToConfig.bind(this);
+    this.onConfigAction = this.onConfigAction.bind(this);
+    this.goToRetrieveResults = this.goToRetrieveResults.bind(this);
+    this.fetchDivisionResult = this.fetchDivisionResult.bind(this);
+    this.goToPrevState = this.goToPrevState.bind(this);
+  }
+
+  // stage 1
+  onUpload(data) {
+    this.setState({
+      metadata: data,
+      currentState: '0.1'
+    })
+  }
+
+  // stage 2
+  goToConfig() {
+    this.setState({
+      currentState: '1'
+    })
+  }
+
+  // stage 3
+  goToRetrieveResults() {
+    this.setState({
+      currentState: '2'
+    })
+  }
+
+  // load data result
+  fetchDivisionResult(data) {
+    this.setState({
+      resultConfig: data
+    })
+  }
+
+  goToPrevState() {
+    let { currentState: state } = this.state;
+    if (state === "2") {
+      this.setState({
+        currentState: "1"
+      })
+    } else if (state === "1") {
+      this.setState({
+        currentState: "0.1"
+      })
+    } else if (state === "0.1") {
+      this.setState({
+        currentState: "0"
+      })
+    }
+  }
+
+  /**
+   * Actions handler (for configurator)
+   * @param action
+   * @param data
+   */
+  onConfigAction(action, data) {
+    let { config } = this.state;
+
+    if (action === "addProject") {
+      this.setState({
+        config: [...config, {
+          name: null,
+          teams: []
+        }]
+      })
+    } else if (action === "addTeam") {
+      config[data].teams = [...config[data].teams, {
+        name: null,
+        size: null,
+        skills: []
+      }];
+      this.setState({
+        config
+      })
+    } else if (action === "addSkill") {
+      let { projectIndex, teamIndex, name } = data;
+      config[projectIndex].teams[teamIndex].skills = [...config[projectIndex].teams[teamIndex].skills, name];
+      this.setState({
+        config
+      });
+    } else if (action === "changeProjectName") {
+      let { projectIndex, name } = data;
+      config[projectIndex].name = name;
+      this.setState({
+        config
+      })
+    } else if (action === "changeTeamName") {
+      let { projectIndex, teamIndex, name } = data;
+
+      config[projectIndex].teams[teamIndex].name = name;
+    } else if (action === "changeTeamSize") {
+      let { projectIndex, teamIndex, size } = data;
+
+      config[projectIndex].teams[teamIndex].size = size;
+    }
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div style={{position: "absolute", height: '100%', width: '100%'}}>
+        <AppRoutes {...this.state}
+                   onUpload={this.onUpload}
+                   goToConfig={this.goToConfig}
+                   onConfigAction={this.onConfigAction}
+                   goToRetrieveResults={this.goToRetrieveResults}
+                   fetchDivisionResult={this.fetchDivisionResult}
+                   goToPrevState={this.goToPrevState} />
       </div>
     );
   }
