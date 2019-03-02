@@ -12,6 +12,8 @@ DELETE_FOLDER = './delete'
 
 FILES_MAP = {}
 
+SKILL_SET = []
+
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -71,11 +73,11 @@ def divide_into_groups():
         df['project'] = ['' for i in range(len(df))]
         df['team'] = ['' for i in range(len(df))]
 
-        soft_skills = set(open('./dataset/soft_skills.txt').read().split('\n'))
+        soft_skills = set(map(lambda x: x.lower(), open('./dataset/soft_skills.txt').read().split('\n')))
 
         for project in projects:
             for team in project['teams']:
-                team_skills_set = set(team["skills"])
+                team_skills_set = set(map(lambda x: x.lower(), team["skills"]))
                 team['members'] = []
                 # in case team do not need soft skills
                 skill_flag = len(soft_skills.intersection(team_skills_set))
@@ -91,8 +93,8 @@ def divide_into_groups():
 
                         # if person is free
                         if person['project'] == '':
-                            person_hard_skills_set = set(person['Hard Skills'].split(', '))
-                            person_soft_skills_set = set(person['Soft Skills'].split(', '))
+                            person_hard_skills_set = set(map(lambda x: x.lower(), person['Hard Skills'].split(', ')))
+                            person_soft_skills_set = set(map(lambda x: x.lower(), person['Soft Skills'].split(', ')))
 
                             # looking for person with biggest skill intersection with project
                             hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
@@ -115,7 +117,7 @@ def divide_into_groups():
 
         for project in projects:
             for team in project['teams']:
-                team_skills_set = set(team["skills"])
+                team_skills_set = set(map(lambda x: x.lower(), team["skills"]))
                 # in case team do not need soft skills
                 skill_flag = len(soft_skills.intersection(team_skills_set))
 
@@ -128,8 +130,8 @@ def divide_into_groups():
 
                         # if person is free
                         if person['project'] == '':
-                            person_hard_skills_set = set(person['Hard Skills'].split(', '))
-                            person_soft_skills_set = set(person['Soft Skills'].split(', '))
+                            person_hard_skills_set = set(map(lambda x: x.lower(), person['Hard Skills'].split(', ')))
+                            person_soft_skills_set = set(map(lambda x: x.lower(), person['Soft Skills'].split(', ')))
 
                             # looking for person with biggest skill intersection with project
                             hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
@@ -168,6 +170,18 @@ def download():
         return Response(status=401)
 
 
+@app.route('/skill_suggestion', methods=['GET'])
+def skill_suggestion():
+    try:
+        sub = request.form['input']
+
+        res = [match for match in SKILL_SET if match.lower().startswith(sub.lower())]
+
+        return Response(json.dumps(res), status=200)
+    except KeyError:
+        return Response(status=400)
+
+
 # TODO 404 handler
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -185,4 +199,5 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
+    SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt', 'r').read().split('\n')
     app.run(debug=False, host='0.0.0.0', port=5000)
