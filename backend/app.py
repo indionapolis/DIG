@@ -3,11 +3,15 @@ from flask_cors import CORS
 import pandas as pd
 import json
 import os
+import uuid
 
 UPLOAD_FOLDER = './uploads'
 WORKING_FOLDER = './working'
 RESULT_FOLDER = './results'
 DELETE_FOLDER = './delete'
+
+FILES_MAP = {}
+
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
@@ -25,29 +29,30 @@ def allowed_file(filename):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+
     file = request.files['file']
 
     if file and allowed_file(file.filename):
         filename = file.filename
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect('/meta')
 
+        # map downloaded files to users
+        uid = str(uuid.uuid4())
+        FILES_MAP[uid] = filename
 
-@app.route('/meta', methods=['GET'])
-def get_meta():
-    for file in os.listdir(UPLOAD_FOLDER):
-        if not allowed_file(file): continue
-        df = pd.read_excel(f'{UPLOAD_FOLDER}/{file}')
+        # return meta data
+        df = pd.read_excel(f'{UPLOAD_FOLDER}/{filename}')
+
         result = dict(
-            name=file,
+            name=filename,
             len=len(df),
             columns=list(df.keys())
         )
 
-        os.rename(f'{UPLOAD_FOLDER}/{file}', f'{WORKING_FOLDER}/{file}')
-        return Response(json.dumps(result), status=200)
+        os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
+        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
     else:
-        return Response(status=404)
+        return Response(status=400)
 
 
 @app.route('/divide_into_groups', methods=['POST'])
@@ -55,11 +60,11 @@ def divide_into_groups():
     # TODO greedy on soft skills
     # TODO round robin distribution
     # TODO skill priority
-    projects = json.loads(request.data)
+    try:
+        uid = request.headers['uuid']
+        file = FILES_MAP[uid]
 
-    for file in os.listdir(WORKING_FOLDER):
-        if not allowed_file(file): continue
-
+        projects = json.loads(request.data)
         df = pd.read_excel(f'{WORKING_FOLDER}/{file}')
         # to send JSON response
         people = df.to_dict('records')
@@ -147,18 +152,20 @@ def divide_into_groups():
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(projects), status=200)
-    else:
-        return Response(status=404)
+    except KeyError:
+        return Response(status=401)
 
 
 @app.route('/download', methods=['GET'])
 def download():
-    for file in os.listdir(RESULT_FOLDER):
-        if not allowed_file(file): continue
+    try:
+        uid = request.headers['uuid']
+        file = FILES_MAP[uid]
         os.rename(f'{RESULT_FOLDER}/{file}', f'{DELETE_FOLDER}/{file}')
+        del FILES_MAP[uid]
         return send_from_directory(DELETE_FOLDER, file)
-    else:
-        return Response(status=404)
+    except KeyError:
+        return Response(status=401)
 
 
 # TODO 404 handler
