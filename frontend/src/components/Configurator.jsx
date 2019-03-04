@@ -14,7 +14,7 @@ class Configurator extends Component {
   }
 
   onProjectAdd() {
-    this.props.onConfigAction("addProject");
+    this.props.onConfigAction("addProject", {});
   }
 
   onProjectRemove(projectIndex) {
@@ -61,7 +61,7 @@ class Configurator extends Component {
       <div className="configurator">
         <div id="configurator_box">
           {this.props.config.map((data, projectIndex) => (
-            <div key={"project" + projectIndex} className="project card">
+            <div key={data.name + "~" + projectIndex} className="project card">
               <div style={{display: "flex", flexDirection: "row", alignItems: 'center'}}>
                 <input className="project_name"
                        type="text"

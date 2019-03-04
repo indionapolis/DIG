@@ -77,9 +77,10 @@ class App extends Component {
     let { config } = this.state;
 
     if (action === "addProject") {
+      let { name } = data;
       this.setState({
         config: [...config, {
-          name: "",
+          name: name ? name : `Проект#${config.length}`,
           teams: []
         }]
       })
