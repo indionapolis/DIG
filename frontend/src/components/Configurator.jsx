@@ -10,6 +10,7 @@ class Configurator extends Component {
     this.onProjectNameChange = this.onProjectNameChange.bind(this);
     this.onTeamRemove = this.onTeamRemove.bind(this);
     this.onProjectRemove = this.onProjectRemove.bind(this);
+    this.onTeamClone = this.onTeamClone.bind(this);
   }
 
   onProjectAdd() {
@@ -20,12 +21,16 @@ class Configurator extends Component {
     this.props.onConfigAction("removeProject", {projectIndex});
   }
 
-  onTeamAdd(i) {
-    this.props.onConfigAction("addTeam", i);
+  onTeamAdd(i, name) {
+    this.props.onConfigAction("addTeam", i, name);
   }
 
   onTeamRemove(projectIndex, teamIndex) {
     this.props.onConfigAction("removeTeam", {projectIndex, teamIndex});
+  }
+
+  onTeamClone(projectIndex, teamIndex) {
+    this.props.onConfigAction("cloneTeam", {projectIndex, teamIndex});
   }
 
   onSkillAdd(projectIndex, teamIndex, name) {
@@ -63,7 +68,7 @@ class Configurator extends Component {
                        placeholder="Введите название проекта"
                        onKeyPress={(e) => {if (e.key === "Enter") this.onTeamAdd(projectIndex)}}
                        onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}
-                       value={this.props.config[projectIndex].name} />
+                       defaultValue={this.props.config[projectIndex].name} />
                 <button onClick={() => this.onTeamAdd(projectIndex)}
                         className="button_decorated button_no_margin">
                   Добавить команду
@@ -78,9 +83,14 @@ class Configurator extends Component {
               </div>
               <div className="teams_module">
                 {this.props.config[projectIndex].teams.map((teamData, teamIndex) => (
-                  <div key={projectIndex + "team" + teamIndex} className="team_element">
+                  <div key={teamData.name + teamIndex.toString()} className="team_element">
                     <div style={{position: 'relative'}}>
-                      <img  className="remove_image"
+                      <img  className="clone_image"
+                            src="./clone.png"
+                            alt="clone"
+                            onClick={() => this.onTeamClone(projectIndex, teamIndex)}
+                      />
+                      <img  className="remove_image remove_image_target"
                             src="./remove.png"
                             alt="remove"
                             onClick={() => this.onTeamRemove(projectIndex, teamIndex)}/>
@@ -90,14 +100,14 @@ class Configurator extends Component {
                       <input type="text"
                              placeholder={"Команда #" + teamIndex}
                              onBlur={(e) => this.onTeamNameChange(projectIndex, teamIndex, e.currentTarget.value)}
-                             value={this.props.config[projectIndex].teams[teamIndex].name} />
+                             defaultValue={this.props.config[projectIndex].teams[teamIndex].name} />
                     </div>
                     <div style={{padding: "7px 10px"}}>
                       Размер:
                       <input type="text" placeholder="0"
                              onBlur={(e) => this.onTeamSizeChange(projectIndex, teamIndex, e.currentTarget.value)}
                              className="users_count"
-                             value={this.props.config[projectIndex].teams[teamIndex].size}/>
+                             defaultValue={this.props.config[projectIndex].teams[teamIndex].size}/>
                     </div>
                     <div style={{padding: "7px 10px"}}>
                       Скиллы:
@@ -112,13 +122,13 @@ class Configurator extends Component {
                              onBlur={(e) => {
                                if (e.currentTarget.value.length > 0) {
                                  this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
-                                 e.currentTarget.value = null;
+                                 e.currentTarget.value = "";
                                }
                              }}
                              onKeyPress={(e) => {
                                if (e.key === "Enter" && e.currentTarget.value.length > 0) {
                                  this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
-                                 e.currentTarget.value = null;
+                                 e.currentTarget.value = "";
                                }
                              }} />
                     </div>

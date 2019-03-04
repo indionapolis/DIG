@@ -146,3 +146,30 @@
 .remove_project:hover .remove_image {
   opacity: 1;
 }
+
+.clone_image {
+  display: none;
+  position: absolute;
+  right: 21px;
+  top: 0;
+  width: 16px;
+
+  opacity: .6;
+  cursor: pointer;
+}
+
+.clone_image:hover {
+  opacity: 1;
+}
+
+.team_element:hover .clone_image {
+  display: block;
+}
+
+.remove_image_target {
+  display: none;
+}
+
+.team_element:hover .remove_image_target {
+  display: block;
+}

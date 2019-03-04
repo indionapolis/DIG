@@ -79,14 +79,15 @@ class App extends Component {
     if (action === "addProject") {
       this.setState({
         config: [...config, {
-          name: null,
+          name: "",
           teams: []
         }]
       })
     } else if (action === "addTeam") {
+      let { name } = data;
       config[data].teams = [...config[data].teams, {
-        name: null,
-        size: null,
+        name: name ? name : `Команда#${config[data].teams.length}`,
+        size: "",
         skills: []
       }];
       this.setState({
@@ -123,6 +124,13 @@ class App extends Component {
       let { projectIndex } = data;
 
       config = [...config.slice(0, projectIndex), ...config.slice(projectIndex + 1)];
+      this.setState({
+        config
+      });
+    } else if (action === "cloneTeam") {
+      let { projectIndex, teamIndex } = data;
+
+      config[projectIndex].teams = [...config[projectIndex].teams, JSON.parse(JSON.stringify(config[projectIndex].teams[teamIndex]))];
       this.setState({
         config
       })
