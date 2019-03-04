@@ -115,3 +115,34 @@
   flex-direction: row;
   width: 100%;
 }
+
+.remove_image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 16px;
+
+  opacity: .6;
+  cursor: pointer;
+}
+
+.remove_image:hover {
+  opacity: 1;
+}
+
+.remove_project {
+  margin-left: 0;
+  padding: 3px 5px 0;
+  border: 2px rgba(255, 82, 48, .7) solid;
+  background: #fff;
+}
+
+.remove_project:hover {
+  margin-left: 0;
+  border-color: rgba(255, 82, 48, 1);
+  background: #fff;
+}
+
+.remove_project:hover .remove_image {
+  opacity: 1;
+}

@@ -8,14 +8,24 @@ class Configurator extends Component {
     this.onSkillAdd = this.onSkillAdd.bind(this);
     this.onTeamAdd = this.onTeamAdd.bind(this);
     this.onProjectNameChange = this.onProjectNameChange.bind(this);
+    this.onTeamRemove = this.onTeamRemove.bind(this);
+    this.onProjectRemove = this.onProjectRemove.bind(this);
   }
 
   onProjectAdd() {
     this.props.onConfigAction("addProject");
   }
 
+  onProjectRemove(projectIndex) {
+    this.props.onConfigAction("removeProject", {projectIndex});
+  }
+
   onTeamAdd(i) {
     this.props.onConfigAction("addTeam", i);
+  }
+
+  onTeamRemove(projectIndex, teamIndex) {
+    this.props.onConfigAction("removeTeam", {projectIndex, teamIndex});
   }
 
   onSkillAdd(projectIndex, teamIndex, name) {
@@ -54,13 +64,27 @@ class Configurator extends Component {
                        onKeyPress={(e) => {if (e.key === "Enter") this.onTeamAdd(projectIndex)}}
                        onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}
                        value={this.props.config[projectIndex].name} />
-                <button onClick={() => this.onTeamAdd(projectIndex)} className="button_decorated button_no_margin">
+                <button onClick={() => this.onTeamAdd(projectIndex)}
+                        className="button_decorated button_no_margin">
                   Добавить команду
+                </button>
+                <button className="button_decorated button_no_margin remove_project"
+                        onClick={() => this.onProjectRemove(projectIndex)}>
+                  <img className="remove_image"
+                        src="./remove.png"
+                        alt="remove"
+                        style={{position: 'relative'}} />
                 </button>
               </div>
               <div className="teams_module">
                 {this.props.config[projectIndex].teams.map((teamData, teamIndex) => (
                   <div key={projectIndex + "team" + teamIndex} className="team_element">
+                    <div style={{position: 'relative'}}>
+                      <img  className="remove_image"
+                            src="./remove.png"
+                            alt="remove"
+                            onClick={() => this.onTeamRemove(projectIndex, teamIndex)}/>
+                    </div>
                     <div style={{padding: "7px 10px"}}>
                       Название:
                       <input type="text"

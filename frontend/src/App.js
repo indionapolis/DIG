@@ -11,7 +11,8 @@ class App extends Component {
       sample: "kek",
       metadata: null,
       config: [],
-      resultConfig: []
+      resultConfig: [],
+      templates: []
     };
     this.onUpload = this.onUpload.bind(this);
     this.goToConfig = this.goToConfig.bind(this);
@@ -111,6 +112,20 @@ class App extends Component {
       let { projectIndex, teamIndex, size } = data;
 
       config[projectIndex].teams[teamIndex].size = size;
+    } else if (action === "removeTeam") {
+      let { projectIndex, teamIndex } = data;
+
+      config[projectIndex].teams = [...config[projectIndex].teams.slice(0, teamIndex), ...config[projectIndex].teams.slice(teamIndex + 1)];
+      this.setState({
+        config
+      })
+    } else if (action === "removeProject") {
+      let { projectIndex } = data;
+
+      config = [...config.slice(0, projectIndex), ...config.slice(projectIndex + 1)];
+      this.setState({
+        config
+      })
     }
   }
 
