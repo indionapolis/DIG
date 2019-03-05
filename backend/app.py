@@ -52,7 +52,7 @@ def upload_file():
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
-        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+        return Response(json.dumps(result), headers={'uuid': uid, 'Access-Control-Expose-Headers': 'uuid'}, status=200)
     else:
         return Response(status=400)
 
