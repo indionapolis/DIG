@@ -83,7 +83,7 @@ def divide_into_groups():
                 skill_flag = len(soft_skills.intersection(team_skills_set))
 
                 # search for people for team
-                while len(team_skills_set):
+                while len(team_skills_set) and len(team['members']) < team['size']:
 
                     # search for best people for team
                     best_person = None
@@ -108,7 +108,7 @@ def divide_into_groups():
                     if best_person:
                         df['project'][best_person_id] = project['name']
                         df['team'][best_person_id] = team['name']
-                        best_person_skills_set = set(best_person['Hard Skills'].split(', '))
+                        best_person_skills_set = set(map(lambda x: x.lower(), best_person['Hard Skills'].split(', ')))
                         team_skills_set = team_skills_set.difference(best_person_skills_set)
                         team['members'].append(people[best_person_id])
                     else:
@@ -121,7 +121,7 @@ def divide_into_groups():
                 # in case team do not need soft skills
                 skill_flag = len(soft_skills.intersection(team_skills_set))
 
-                while len(team['members']) != team['size']:
+                while len(team['members']) < team['size']:
                     # search for best people for team
                     best_person = None
                     best_person_id = 0
