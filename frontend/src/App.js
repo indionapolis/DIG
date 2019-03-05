@@ -12,7 +12,8 @@ class App extends Component {
       metadata: null,
       config: [],
       resultConfig: [],
-      templates: []
+      templates: [],
+      uuid: ""
     };
     this.onUpload = this.onUpload.bind(this);
     this.goToConfig = this.goToConfig.bind(this);
@@ -23,10 +24,11 @@ class App extends Component {
   }
 
   // stage 1
-  onUpload(data) {
+  onUpload(data, uuid) {
     this.setState({
       metadata: data,
-      currentState: '0.1'
+      currentState: '0.1',
+      uuid: uuid
     })
   }
 
@@ -136,6 +138,7 @@ class App extends Component {
         config
       })
     }
+    console.log(config)
   }
 
   render() {
