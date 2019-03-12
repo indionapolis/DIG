@@ -173,9 +173,12 @@ def download():
 @app.route('/skill_suggestion', methods=['GET'])
 def skill_suggestion():
     try:
-        sub = request.form['input']
+        sub = str(request.args.get('input'))
+        print(sub)
 
         res = [match for match in SKILL_SET if match.lower().startswith(sub.lower())]
+        print(res)
+        print(SKILL_SET)
 
         return Response(json.dumps(res), status=200)
     except KeyError:
