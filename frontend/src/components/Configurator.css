@@ -105,6 +105,35 @@
   margin-bottom: 5px;
 }
 
+.input_skill_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.skill_suggestions {
+  display: none;
+  position: absolute;
+  left: 10px;
+  top: 35px;
+  max-height: 100px;
+  background-color: #fff;
+  overflow-y: scroll;
+  width: 120px;
+  border-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: 1.5px solid #efefef;
+}
+
+.suggestion_skill_elem {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.suggestion_skill_elem:hover {
+  background: #efefef;
+}
+
 .divide {
   position: absolute;
   right: 45px;
