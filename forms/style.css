@@ -87,7 +87,22 @@ section .block-title {
     font-weight: 500;
     color: #313131;
     text-align: center;
+    word-wrap: break-word;
     border-bottom: 2px solid #f3f3f3;
+}
+
+section .block-title input {
+    width: 100%;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    outline: 0;
+    border: 0;
+    text-align: center;
+}
+
+section .block-title input::placeholder {
+    color: #c0c0c0;
 }
 
 section .block-tools {
@@ -112,6 +127,10 @@ section .block-tools button {
 section .block-tools button:hover {
     cursor: pointer;
     background-color: #f3f3f3;
+}
+
+section .block-tools .save {
+    background-image: url(img/save-icon.svg);
 }
 
 section .block-tools .share {
