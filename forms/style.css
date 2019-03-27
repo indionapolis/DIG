@@ -48,6 +48,7 @@ section .container {
 }
 
 section #add-block {
+    min-width: 270px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -85,6 +86,7 @@ section .block-title {
     font-size: 25px;
     font-weight: 500;
     color: #313131;
+    text-align: center;
     border-bottom: 2px solid #f3f3f3;
 }
 
@@ -122,6 +124,14 @@ section .block-tools .edit {
 
 section .block-tools .delete {
     background-image: url(img/delete-icon.svg);
+}
+
+section .block-tools .delete:hover {
+    background-color: rgba(255, 92, 53, 0.1);
+}
+
+section .block-tools .download {
+    background-image: url(img/download-icon.svg);
 }
 
 /* FOOTER */
