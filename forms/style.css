@@ -1,9 +1,15 @@
+* {
+    transition: all 0.2s ease;
+}
+
 body {
     margin: 0;
     padding: 0;
     font-family: "Roboto", sans-serif;
+    background-color: #f8f8f8;
     
     --inno-green: #80bc00;
+    --inno-purple: #60269e;
 }
 
 .container {
@@ -26,6 +32,96 @@ header .title {
     color: var(--inno-green);
     font-weight: 600;
     font-size: 40px;
+}
+
+/* SECTION */
+
+section {
+    padding: 30px 0;
+    padding-bottom: 80px;
+}
+
+section .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+section #add-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: 5px dashed #d3d3d3;
+}
+
+section #add-block div {
+    font-size: 80px;
+    user-select: none;
+    color: #d3d3d3;
+}
+
+section #add-block:hover,
+section #add-block:hover > div {
+    cursor: pointer;
+    color: var(--inno-purple);
+    border-color: var(--inno-purple);
+}
+
+section .block {
+    min-width: 280px;
+    background-color: white;
+    flex-basis: 48%;
+    margin-bottom: 30px;
+    border-radius: 25px;
+}
+
+section .block:hover {
+    box-shadow: 0px 0px 55px -10px rgba(96, 38, 158, 0.4);
+}
+
+section .block-title {
+    padding: 20px;
+    font-size: 25px;
+    font-weight: 500;
+    color: #313131;
+    border-bottom: 2px solid #f3f3f3;
+}
+
+section .block-tools {
+    padding: 20px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+section .block-tools button {
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    background-position: center;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-color: unset;
+    border-radius: 100%;
+    border: 0;
+    outline: 0;
+}
+
+section .block-tools button:hover {
+    cursor: pointer;
+    background-color: #f3f3f3;
+}
+
+section .block-tools .share {
+    background-image: url(img/share-icon.svg);
+}
+
+section .block-tools .edit {
+    background-image: url(img/edit-icon.svg);
+}
+
+section .block-tools .delete {
+    background-image: url(img/delete-icon.svg);
 }
 
 /* FOOTER */
