@@ -28,7 +28,7 @@ function addBlock() {
  * @param {*} saveBtn save button needed for getting the block itself.
  */
 function saveBlock(saveBtn) {
-    block = saveBtn.getGrandParent(saveBtn);
+    block = getGrandParent(saveBtn);
     var projectNameInput = block.getElementsByTagName('input')[0];
     var title = projectNameInput.value;
     
@@ -52,7 +52,7 @@ function saveBlock(saveBtn) {
  * @param {*} deleteBtn delete button neede for getting its grandparent and deleting it.
  */
 function deleteBlock(deleteBtn) {
-    block = deleteBtn.getGrandParent(deleteBtn);
+    block = getGrandParent(deleteBtn);
     block.remove();
 }
 
