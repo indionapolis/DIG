@@ -7,9 +7,9 @@ function addBlock() {
         return;
     }
 
-    var blockHtml = '<div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>'
-                  + '<div class="block-tools"><button class="save" title="Create a form" onclick="saveBlock(this);"></button>'
-                  + '<button class="delete" title="Delete form" onclick="deleteBlock(this);"></button></div>',
+    const blockHtml = '<div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>'
+                    + '<div class="block-tools"><button class="save" title="Create a form" onclick="saveBlock(this);"></button>'
+                    + '<button class="delete" title="Delete form" onclick="deleteBlock(this);"></button></div>',
         blocksWrapper = document.getElementById("add-block").parentElement;
     var block = createBlockFromHtml('div', 'block empty', blockHtml);
     blocksWrapper.appendChild(block);
@@ -42,9 +42,47 @@ function saveBlock(saveBtn) {
     block.firstChild.textContent += title;
 
     block.classList.remove('empty');
-    var toolsHtml = '<button class="share" title="Get the link on form"></button><button class="edit" title="Edit form"></button>'
-                  + '<button class="download" title="Download dataset"></button><button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
+    const toolsHtml = '<button class="share" title="Get the link on form"></button><button class="edit" title="Edit form"></button>'
+                    + '<button class="download" title="Download dataset"></button><button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
     saveBtn.parentElement.innerHTML = toolsHtml.trim();
+
+    createEmptyForm(title);
+}
+
+/**
+ * Create an empty form on TypeForm site.
+ * @param {*} title Title of the form.
+ */
+function createEmptyForm(title) {
+    const url = "https://api.typeform.com/forms";
+    const data = {
+        "title": title
+    };
+
+    var promise = makeRequest(url, data, "POST");
+    promise.then(function(data) {
+        window.open("https://ireknazmiev.typeform.com/to/" + data.id);
+    });
+}
+
+/**
+ * Make a request (GET, POST, ...) to the TypeForm's endpoint.
+ * @param {*} url URL-address of the site to make a request on.
+ * @param {*} data Data to be transfered.
+ * @param {*} method Method of a request (GET, POST, ...).
+ */
+async function makeRequest(url, data, method) {
+    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF";
+
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(data),
+    });
+    return await response.json();
 }
 
 /**
