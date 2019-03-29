@@ -42,11 +42,14 @@ function saveBlock(saveBtn) {
     block.firstChild.textContent += title;
 
     block.classList.remove('empty');
-    const toolsHtml = '<button class="share" title="Get the link on form"></button><button class="edit" title="Edit form"></button>'
-                    + '<button class="download" title="Download dataset"></button><button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
-    saveBtn.parentElement.innerHTML = toolsHtml.trim();
 
-    createEmptyForm(title);
+    var promise = createEmptyForm(title);
+
+    promise.then(function(data) {
+        const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button><button class="edit" title="Edit form"></button>'
+                        + '<button class="download" title="Download dataset"></button><button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
+        saveBtn.parentElement.innerHTML = toolsHtml.trim();
+    });
 }
 
 /**
@@ -59,11 +62,24 @@ function createEmptyForm(title) {
         "title": title
     };
 
-    var promise = makeRequest(url, data, "POST");
-    promise.then(function(data) {
-        window.open("https://ireknazmiev.typeform.com/to/" + data.id);
-    });
+    return makeRequest(url, data, "POST");
 }
+
+/**
+ * Save link to the clipboard.
+ * @param {*} link Link to be saved.
+ */
+function copyToClipboard(link) {
+    const el = document.createElement('textarea');
+    el.value = link;
+    el.style.position = 'absolute';
+    el.style.left = '-9000px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert("The link to the form is copied to the clipboard");
+};
 
 /**
  * Make a request (GET, POST, ...) to the TypeForm's endpoint.
