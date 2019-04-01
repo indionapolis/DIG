@@ -27,13 +27,47 @@
                 <div id="add-block" class="block" onclick="addBlock();">
                     <div>+</div>
                 </div>
-                
+
                 <div class="block">
                     <div class="block-title">Title: block 2</div>
+
                     <div class="block-tools">
                         <button class="share" title="Get the link on form"></button>
                         <button class="edit" title="Edit form"></button>
                         <button class="download" title="Download dataset"></button>
+                        <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
+                    </div>
+                </div>
+
+                <div class="block empty">
+                    <div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>
+                    
+                    <form class="block-edit-panel">
+                        <div class="form-field text">
+                            <div class="question"><input type="text" placeholder="Question 1"></div>
+                        </div>
+
+                        <div class="form-field check-box">
+                            <div class="question"><input type="text" placeholder="Question 2"></div>
+                            <ul class="answer-list">
+                                <li><input type="radio" disabled><input type="text" placeholder="Answer 1"></li>
+                                <li><input type="radio" disabled><input type="text" placeholder="Answer 2"></li>
+                                <li><input type="radio" disabled><input type="text" placeholder="Answer 3"></li>
+                            </ul>
+                        </div>
+
+                        <div class="form-field check-box-any">
+                            <div class="question"><input type="text" placeholder="Question 3"></div>
+                            <ul class="answer-list">
+                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 1"></li>
+                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 2"></li>
+                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 3"></li>
+                            </ul>
+                        </div>
+                    </form>
+
+                    <div class="block-tools">
+                        <button class="save" title="Create a form" onclick="saveBlock(this);"></button>
                         <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
                     </div>
                 </div>

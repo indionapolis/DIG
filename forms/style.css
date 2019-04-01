@@ -12,6 +12,13 @@ body {
     --inno-purple: #60269e;
 }
 
+input,
+button {
+    border: 0;
+    outline: 0;
+    padding: 0;
+}
+
 .container {
     width: 70%;
     max-width: 1080px;
@@ -45,6 +52,7 @@ section .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    align-items: flex-start;
 }
 
 section #add-block {
@@ -81,8 +89,11 @@ section .block:hover {
     box-shadow: 0px 0px 55px -10px rgba(96, 38, 158, 0.4);
 }
 
-section .block-title {
+section .block > *{
     padding: 20px;
+}
+
+section .block-title {
     font-size: 25px;
     font-weight: 500;
     color: #313131;
@@ -96,8 +107,6 @@ section .block-title input {
     font-size: inherit;
     font-family: inherit;
     font-weight: inherit;
-    outline: 0;
-    border: 0;
     text-align: center;
 }
 
@@ -105,8 +114,54 @@ section .block-title input::placeholder {
     color: #c0c0c0;
 }
 
+section .block-edit-panel {
+    padding-bottom: 0;
+    overflow: auto;
+    max-height: 50vh;
+}
+
+section .block-edit-panel .form-field:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+section .block-edit-panel .question {
+    padding: 5px;
+}
+
+section .block-edit-panel .question:focus-within  {
+    border-bottom: #60269e93 solid 2px;
+}
+
+section .block-edit-panel .question input {
+    width: 100%;
+    font-size: 20px;
+}
+
+section .block-edit-panel .question input::placeholder {
+    color: rgb(163, 163, 163);
+}
+
+section .block-edit-panel .answer-list {
+    padding-top: 8px;
+    padding: 8px 0 0 10px;
+    margin: 0;
+    list-style: none;
+}
+
+section .block-edit-panel .answer-list input[type="radio"],
+section .block-edit-panel .answer-list input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+section .block-edit-panel .answer-list input::placeholder {
+    color: rgb(196, 196, 196);
+}
+
+section .block-edit-panel .answer-list input[type="text"] {
+    font-size: 15px;
+}
+
 section .block-tools {
-    padding: 20px;
     display: flex;
     justify-content: space-evenly;
 }
@@ -120,8 +175,6 @@ section .block-tools button {
     background-repeat: no-repeat;
     background-color: unset;
     border-radius: 100%;
-    border: 0;
-    outline: 0;
 }
 
 section .block-tools button:hover {
