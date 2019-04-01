@@ -45,6 +45,7 @@ function saveBlock(saveBtn) {
     var promise = createEmptyForm(title);
 
     promise.then(function(data) {
+        getGrandParent(saveBtn).dataset.formId = data.id;
         const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
                         + '<button class="edit" title="Edit form"></button>'
                         + '<button class="download" title="Download dataset"></button>'
@@ -116,16 +117,25 @@ async function makeRequest(url, data, method) {
         },
         body: JSON.stringify(data),
     });
+    
     return await response.json();
 }
 
 /**
- * Delete given block's grandparent.
+ * Delete the form from TypeForm site and approproate block found by given button.
  * @param {*} deleteBtn button which activated current function.
  */
 function deleteBlock(deleteBtn) {
     block = getGrandParent(deleteBtn);
-    block.remove();
+
+    if (!block.classList.contains('empty')) {
+        const formId = block.dataset.formId,
+              url = 'https://api.typeform.com/forms/' + formId;
+
+        const promise = makeRequest(url, {}, 'DELETE');
+        promise.then(block.remove());
+    } else
+        block.remove();
 }
 
 /**
