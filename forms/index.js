@@ -173,6 +173,34 @@ function addFormField(btn, type) {
         getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
 }
 
+/**
+ * Add list element of a chosen type near the activating button.
+ * @param {*} btn button which activated current function.
+ * @param {*} type type of a list element.
+ */
+function addListElement(btn, type) {
+    var elementTmpl = '';
+
+    if (type == "radio")
+        elementTmpl = document.getElementById('radio-tmpl');
+    else if (type == "checkbox")
+        elementTmpl = document.getElementById('checkbox-tmpl');
+
+    getGrandParent(btn).insertBefore(getElementFromTemplate(elementTmpl), btn.parentElement)
+}
+
+/**
+ * Remove a form element of a chosen type;
+ * @param {*} btn button which activated current function.
+ * @param {*} type type of a form element.
+ */
+function removeFormElement(btn, type) {
+    if (type == "question")
+        getGrandParent(btn).remove();
+    else
+        btn.parentElement.remove();
+}
+
 // get block's grandparent
 function getGrandParent(elem) {
     return elem.parentElement.parentElement;

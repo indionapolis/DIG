@@ -61,24 +61,62 @@
         </template>
 
         <template id="form-text-field-tmpl">
-            <div class="form-field text"><div class="question"><input type="text" placeholder="Question"></div></div>
+            <div class="form-field text">
+                <div class="question">
+                    <input type="text" placeholder="Question">
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                </div>
+            </div>
         </template>
 
         <template id="form-radio-field-tmpl">
             <div class="form-field radio">
-                <div class="question"><input type="text" placeholder="Question"></div>
+                <div class="question">
+                    <input type="text" placeholder="Question">
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                </div>
+
                 <ul class="answer-list">
-                    <li><input type="radio" disabled><input type="text" placeholder="Answer"></li>
+                    <li>
+                        <input type="radio" disabled><input type="text" placeholder="Answer">
+                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+                    </li>
+
+                    <li><button class="add-list-element" onclick="addListElement(this, 'radio');" title="Add list element"  form="">+</button></li>
                 </ul>
             </div>
         </template>
 
         <template id="form-chk-box-field-tmpl">
             <div class="form-field check-box">
-                <div class="question"><input type="text" placeholder="Question 3"></div>
-                <ul class="answer-list"><li><input type="checkbox" disabled><input type="text" placeholder="Answer 1"></li>
+                <div class="question">
+                    <input type="text" placeholder="Question">
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                </div>
+
+                <ul class="answer-list">
+                    <li>
+                        <input type="checkbox" disabled><input type="text" placeholder="Answer">
+                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+                    </li>
+
+                    <li><button class="add-list-element" onclick="addListElement(this, 'checkbox');" title="Add list element"  form="">+</button></li>
                 </ul>
             </div>
+        </template>
+
+        <template id="radio-tmpl">
+            <li>
+                <input type="radio" disabled><input type="text" placeholder="Answer">
+                <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+            </li>
+        </template>
+
+        <template id="checkbox-tmpl">
+            <li>
+                <input type="checkbox" disabled><input type="text" placeholder="Answer">
+                <button class="remove-form-element" onclick="removeFormElement(this, 'checkbox');" title="Remove list element"  form="">-</button>
+            </li>
         </template>
     </body>
 </html>
