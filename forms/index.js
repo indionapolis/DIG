@@ -39,7 +39,7 @@ function saveBlock(saveBtn) {
     }
     
     projectNameInput.remove();
-    block.firstChild.textContent += title;
+    block.firstElementChild.textContent += title;
 
     block.classList.remove('empty');
 
@@ -122,6 +122,19 @@ function createBlockFromHtml(type, elemClass, html) {
     block.classList = elemClass;
 
     return block;
+}
+
+// Hide or show the element + rotate it on 45 degrees.
+function hide(btn, blockId) {
+    block = document.getElementById(blockId);
+    if (block.classList.length == 0) {
+        block.classList.add("hidden");
+        btn.style.transform = "rotate(0deg)";
+    }
+    else {
+        block.classList.remove("hidden");
+        btn.style.transform = "rotate(45deg)";
+    }
 }
 
 // get block's grandparent
