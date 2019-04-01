@@ -42,8 +42,10 @@ function saveBlock(saveBtn) {
 
     block.classList.remove('empty');
 
-    var promise = createEmptyForm(title);
+    var promise = createEmptyForm(title),
+        preload = document.getElementById('preload');
 
+    preload.style.display = "block";
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
         const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
@@ -54,6 +56,7 @@ function saveBlock(saveBtn) {
 
         const editPanel = block.getElementsByClassName('block-edit-panel')[0];
         hideEditPanel(editPanel);
+        preload.style.display = "none";
     });
 }
 

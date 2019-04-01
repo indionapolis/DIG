@@ -66,6 +66,20 @@ section .container {
     align-items: flex-start;
 }
 
+section #preload {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(1,1,1,0.1);
+    background-image: url('img/preload.svg');
+    background-position: center;
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+}
+
 section #add-block {
     min-width: 270px;
     display: flex;
