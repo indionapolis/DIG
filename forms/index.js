@@ -6,12 +6,11 @@ function addBlock() {
         alert("You already have an empty project! Create it first before making a new one.");
         return;
     }
+    
+    const blocksWrapper = document.getElementById("add-block").parentElement,
+          blockTmpl = document.getElementById('empty-block-tmpl'),
+          block = getElementFromTemplate(blockTmpl);
 
-    const blockHtml = '<div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>'
-                    + '<div class="block-tools"><button class="save" title="Create a form" onclick="saveBlock(this);"></button>'
-                    + '<button class="delete" title="Delete form" onclick="deleteBlock(this);"></button></div>',
-        blocksWrapper = document.getElementById("add-block").parentElement;
-    var block = createBlockFromHtml('div', 'block empty', blockHtml);
     blocksWrapper.appendChild(block);
     
     var projectNameInput = block.getElementsByTagName('input')[0];
@@ -25,7 +24,7 @@ function addBlock() {
 
 /**
  * Complete block creation by saving it.
- * @param {*} saveBtn save button needed for getting the block itself.
+ * @param {*} saveBtn button which activated current function.
  */
 function saveBlock(saveBtn) {
     block = getGrandParent(saveBtn);
@@ -46,10 +45,29 @@ function saveBlock(saveBtn) {
     var promise = createEmptyForm(title);
 
     promise.then(function(data) {
-        const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button><button class="edit" title="Edit form"></button>'
-                        + '<button class="download" title="Download dataset"></button><button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
+        const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
+                        + '<button class="edit" title="Edit form"></button>'
+                        + '<button class="download" title="Download dataset"></button>'
+                        + '<button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
         saveBtn.parentElement.innerHTML = toolsHtml.trim();
+
+        const editPanel = block.getElementsByClassName('block-edit-panel')[0];
+        hideEditPanel(editPanel);
     });
+}
+
+function hideEditPanel(editPanel) {
+    editPanel.style.overflow = "hidden";
+    editPanel.style.padding = "0";
+    editPanel.style.maxHeight = "0";
+}
+
+/**
+ * 
+ * @param {*} template tamplate block.
+ */
+function getElementFromTemplate(template) {
+    return template.content.children.item(0).cloneNode(true);
 }
 
 /**
@@ -103,7 +121,7 @@ async function makeRequest(url, data, method) {
 
 /**
  * Delete given block's grandparent.
- * @param {*} deleteBtn delete button neede for getting its grandparent and deleting it.
+ * @param {*} deleteBtn button which activated current function.
  */
 function deleteBlock(deleteBtn) {
     block = getGrandParent(deleteBtn);
@@ -111,20 +129,10 @@ function deleteBlock(deleteBtn) {
 }
 
 /**
- * Create block from html string.
- * @param {*} type Type of block.
- * @param {*} elemClass Block's class.
- * @param {*} html Html code for block.
+ * Hide and show the element with given ID
+ * @param {*} btn button which activated current function.
+ * @param {*} blockId id of element to be hidden/shown
  */
-function createBlockFromHtml(type, elemClass, html) {
-    var block = document.createElement(type);
-    block.innerHTML = html.trim();
-    block.classList = elemClass;
-
-    return block;
-}
-
-// Hide or show the element + rotate it on 45 degrees.
 function hide(btn, blockId) {
     block = document.getElementById(blockId);
     if (block.classList.length == 0) {
@@ -135,6 +143,24 @@ function hide(btn, blockId) {
         block.classList.remove("hidden");
         btn.style.transform = "rotate(45deg)";
     }
+}
+
+/**
+ * Add a new field with question of one of the given type to the form.
+ * @param {} btn button which activated current function.
+ * @param {*} type the type of a field to be added.
+ */
+function addFormField(btn, type) {
+    const textFieldTmpl = document.getElementById('form-text-field-tmpl'),
+          radioBtnTmpl = document.getElementById('form-radio-field-tmpl'),
+          chkBoxBtnTmpl = document.getElementById('form-chk-box-field-tmpl');
+
+    if (type == "text")
+        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(textFieldTmpl), getGrandParent(btn));
+    else if (type == "radio")
+        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(radioBtnTmpl), getGrandParent(btn));
+    else if (type == "check")
+        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
 }
 
 // get block's grandparent

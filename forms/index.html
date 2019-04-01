@@ -38,48 +38,6 @@
                         <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
                     </div>
                 </div>
-
-                <div class="block empty">
-                    <div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>
-                    
-                    <form class="block-edit-panel">
-                        <div id="add-form-field-panel">
-                            <button id="add-form-field" title="Add form field" onclick="hide(this, 'add-form-field-cont');" form="">+</button>
-                            <div id="add-form-field-cont" class="hidden">
-                                <button id="add-text-qn" onclick="addFormField(this, 'text');" form=""></button>
-                                <button id="add-rad-btn" onclick="addFormField(this, 'radio');" form=""></button>
-                                <button id="add-chk-box" onclick="addFormField(this, 'check');" form=""></button>
-                            </div>
-                        </div>
-
-                        <div class="form-field text">
-                            <div class="question"><input type="text" placeholder="Question 1"></div>
-                        </div>
-
-                        <div class="form-field radio">
-                            <div class="question"><input type="text" placeholder="Question 2"></div>
-                            <ul class="answer-list">
-                                <li><input type="radio" disabled><input type="text" placeholder="Answer 1"></li>
-                                <li><input type="radio" disabled><input type="text" placeholder="Answer 2"></li>
-                                <li><input type="radio" disabled><input type="text" placeholder="Answer 3"></li>
-                            </ul>
-                        </div>
-
-                        <div class="form-field check-box">
-                            <div class="question"><input type="text" placeholder="Question 3"></div>
-                            <ul class="answer-list">
-                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 1"></li>
-                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 2"></li>
-                                <li><input type="checkbox" disabled><input type="text" placeholder="Answer 3"></li>
-                            </ul>
-                        </div>
-                    </form>
-
-                    <div class="block-tools">
-                        <button class="save" title="Create a form" onclick="saveBlock(this);"></button>
-                        <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -90,5 +48,48 @@
                 Group Breakdown © 2019
             </div>
         </footer>
+
+        <template id="empty-block-tmpl">
+            <div class="block empty">
+                <div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>
+                
+                <form class="block-edit-panel">
+                    <div id="add-form-field-panel">
+                        <button id="add-form-field" onclick="hide(this, 'add-form-field-cont');" title="Add form field"  form="">+</button>
+                        <div id="add-form-field-cont" class="hidden">
+                            <button id="add-text-qn" onclick="addFormField(this, 'text');" title="Add text question" form=""></button>
+                            <button id="add-rad-btn" onclick="addFormField(this, 'radio');" title="Add radio button question" form=""></button>
+                            <button id="add-chk-box" onclick="addFormField(this, 'check');" title="Add checkbox question" form=""></button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="block-tools">
+                    <button class="save" title="Create a form" onclick="saveBlock(this);"></button>
+                    <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
+                </div>
+            </div>
+        </template>
+
+        <template id="form-text-field-tmpl">
+            <div class="form-field text"><div class="question"><input type="text" placeholder="Question"></div></div>
+        </template>
+
+        <template id="form-radio-field-tmpl">
+            <div class="form-field radio">
+                <div class="question"><input type="text" placeholder="Question"></div>
+                <ul class="answer-list">
+                    <li><input type="radio" disabled><input type="text" placeholder="Answer"></li>
+                </ul>
+            </div>
+        </template>
+
+        <template id="form-chk-box-field-tmpl">
+            <div class="form-field check-box">
+                <div class="question"><input type="text" placeholder="Question 3"></div>
+                <ul class="answer-list"><li><input type="checkbox" disabled><input type="text" placeholder="Answer 1"></li>
+                </ul>
+            </div>
+        </template>
     </body>
 </html>
