@@ -53,8 +53,8 @@ function saveBlock(saveBtn) {
         getGrandParent(saveBtn).dataset.formId = data.id;
         const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
                         + '<button class="edit" title="Edit form"></button>'
-                        + '<button class="download" title="Download dataset"></button>'
-                        + '<button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>';
+                        + '<button class="download" onclick="downloadDataset(this);" title="Download dataset"></button>'
+                        + '<button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>';
         saveBtn.parentElement.innerHTML = toolsHtml.trim();
 
         const editPanel = block.getElementsByClassName('block-edit-panel')[0];
@@ -83,20 +83,23 @@ function deleteBlock(deleteBtn) {
 /**
  * Make a request (GET, POST, ...) to the TypeForm's endpoint.
  * @param {*} url URL-address of the site to make a request on.
- * @param {*} data Data to be transfered.
+ * @param {*} body Data to be transfered.
  * @param {*} method Method of a request (GET, POST, ...).
  */
-async function makeRequest(url, data={}, method) {
-    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF";
+async function makeRequest(url, body={}, method) {
+    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF",
+          data = {
+              "method" : method,
+              "headers" : {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + token
+              },
+          };
 
-    const response = await fetch(url, {
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify(data),
-    });
+    if (Object.keys(body).length > 0)
+        data.body = JSON.stringify(body);
+
+    const response = await fetch(url, data);
     
     return await response.json();
 }
@@ -207,6 +210,36 @@ function copyToClipboard(link) {
     document.body.removeChild(el);
     alert("The link to the form is copied to the clipboard");
 };
+
+/**
+ * Get JSON from TypeForm and download it from browser.
+ * @param {*} btn button which activated current function.
+ */
+function downloadDataset(btn) {
+    const block = getGrandParent(btn),
+          formId = block.dataset.formId,
+          url = "https://api.typeform.com/forms/"+ formId +"/responses";
+    
+    var promise = makeRequest(url, {}, "GET");  // get json
+    promise.then(function(data) {
+        downloadJson(data, "dataset");
+    });
+}
+
+/**
+ * Download given json file.
+ * @param {*} exportObj JSON.
+ * @param {*} exportName name JSON will have after being saved.
+ */
+function downloadJson(exportObj, exportName){
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
 
 /**
  * Hide and show the element with given ID
