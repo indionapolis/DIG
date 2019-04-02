@@ -42,7 +42,10 @@ function saveBlock(saveBtn) {
 
     block.classList.remove('empty');
 
-    var promise = createEmptyForm(title),
+    const form = block.getElementsByTagName('form')[0],
+          fields = getFormFields(form);
+    
+    var promise = createForm(title, fields),
         preload = document.getElementById('preload');
 
     preload.style.display = "block";
@@ -58,70 +61,6 @@ function saveBlock(saveBtn) {
         hideEditPanel(editPanel);
         preload.style.display = "none";
     });
-}
-
-function hideEditPanel(editPanel) {
-    editPanel.style.overflow = "hidden";
-    editPanel.style.padding = "0";
-    editPanel.style.maxHeight = "0";
-}
-
-/**
- * 
- * @param {*} template tamplate block.
- */
-function getElementFromTemplate(template) {
-    return template.content.children.item(0).cloneNode(true);
-}
-
-/**
- * Create an empty form on TypeForm site.
- * @param {*} title Title of the form.
- */
-function createEmptyForm(title) {
-    const url = "https://api.typeform.com/forms";
-    const data = {
-        "title": title
-    };
-
-    return makeRequest(url, data, "POST");
-}
-
-/**
- * Save link to the clipboard.
- * @param {*} link Link to be saved.
- */
-function copyToClipboard(link) {
-    const el = document.createElement('textarea');
-    el.value = link;
-    el.style.position = 'absolute';
-    el.style.left = '-9000px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    alert("The link to the form is copied to the clipboard");
-};
-
-/**
- * Make a request (GET, POST, ...) to the TypeForm's endpoint.
- * @param {*} url URL-address of the site to make a request on.
- * @param {*} data Data to be transfered.
- * @param {*} method Method of a request (GET, POST, ...).
- */
-async function makeRequest(url, data, method) {
-    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF";
-
-    const response = await fetch(url, {
-        method: method,
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify(data),
-    });
-    
-    return await response.json();
 }
 
 /**
@@ -142,6 +81,134 @@ function deleteBlock(deleteBtn) {
 }
 
 /**
+ * Make a request (GET, POST, ...) to the TypeForm's endpoint.
+ * @param {*} url URL-address of the site to make a request on.
+ * @param {*} data Data to be transfered.
+ * @param {*} method Method of a request (GET, POST, ...).
+ */
+async function makeRequest(url, data={}, method) {
+    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF";
+
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(data),
+    });
+    
+    return await response.json();
+}
+
+/**
+ * Create a form with given fields filled in on TypeForm site.
+ * @param {*} title Title of the form.
+ * @param {*} fields Fields to be inserted into the form.
+ */
+function createForm(title, fields=[]) {
+    const url = "https://api.typeform.com/forms";
+    const data = {
+        "title": title,
+        "fields" : fields
+    };
+
+    return makeRequest(url, data, "POST");
+}
+
+/**
+ * Get fields from given form and translate them to a specific format.
+ * @param {*} form form to be translated.
+ */
+function getFormFields(form) {
+    var fields = [],
+        fieldBLocks = form.getElementsByClassName('form-field');
+
+    for (let field of fieldBLocks) {
+        if (field.classList.contains("text")) {
+            const question = field.getElementsByClassName('question')[0].firstElementChild.value;
+
+            fields.push(
+                {
+                    "title": question,
+                    "type": "long_text",
+                    "validations": {
+                        "required": true,
+                        "max_length": 40
+                    }
+                }
+            );
+        }
+        else if (field.classList.contains("radio") || field.classList.contains("check-box")) {
+            const question = field.getElementsByClassName('question')[0].firstElementChild.value,
+                  choices = getChoices(field);
+
+            fields.push(
+                {
+                    "title": question,
+                    "type": "multiple_choice",
+                    "properties": {
+                        "randomize": false,
+                        "allow_multiple_selection": field.classList.contains("check-box"),
+                        "allow_other_choice": false,
+                        "vertical_alignment": true,
+                        "choices": choices
+                    },
+                    "validations": {
+                        "required": true
+                    }
+                }
+            );
+        }
+    }
+
+    return fields;
+
+    /**
+     * Get unordered list elements translated to a specific format.
+     * @param {*} field field containing the list.
+     */
+    function getChoices(field) {
+        var choices = [];
+        const uList = field.getElementsByClassName('list-item');
+        
+        for (let liElem of uList) {            
+            choices.push(
+                {
+                    "label" : liElem.children[1].value
+                }
+            );
+        }
+        
+        return choices;
+    }
+}
+
+/**
+ * Transform given template block into the element.
+ * @param {*} template template block.
+ */
+function getElementFromTemplate(template) {
+    return template.content.children.item(0).cloneNode(true);
+}
+
+/**
+ * Save link to the clipboard.
+ * @param {*} link Link to be saved.
+ */
+function copyToClipboard(link) {
+    const el = document.createElement('textarea');
+    el.value = link;
+    el.style.position = 'absolute';
+    el.style.left = '-9000px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert("The link to the form is copied to the clipboard");
+};
+
+/**
  * Hide and show the element with given ID
  * @param {*} btn button which activated current function.
  * @param {*} blockId id of element to be hidden/shown
@@ -159,8 +226,18 @@ function hide(btn, blockId) {
 }
 
 /**
+ * Hide edit panel smoothly.
+ * @param {*} editPanel panel element to be hidden smoothly.
+ */
+function hideEditPanel(editPanel) {
+    editPanel.style.overflow = "hidden";
+    editPanel.style.padding = "0";
+    editPanel.style.maxHeight = "0";
+}
+
+/**
  * Add a new field with question of one of the given type to the form.
- * @param {} btn button which activated current function.
+ * @param {*} btn button which activated current function.
  * @param {*} type the type of a field to be added.
  */
 function addFormField(btn, type) {

@@ -24,7 +24,7 @@
 
         <section>
             <div id="preload"></div>
-            
+
             <div class="container">
                 <div id="add-block" class="block" onclick="addBlock();">
                     <div>+</div>
@@ -66,7 +66,7 @@
             <div class="form-field text">
                 <div class="question">
                     <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
                 </div>
             </div>
         </template>
@@ -75,16 +75,16 @@
             <div class="form-field radio">
                 <div class="question">
                     <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
                 </div>
 
                 <ul class="answer-list">
-                    <li>
-                        <input type="radio" disabled><input type="text" placeholder="Answer">
-                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+                    <li class="list-item">
+                        <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
+                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element" form="">-</button>
                     </li>
 
-                    <li><button class="add-list-element" onclick="addListElement(this, 'radio');" title="Add list element"  form="">+</button></li>
+                    <li><button class="add-list-element" onclick="addListElement(this, 'radio');" title="Add list element" form="">+</button></li>
                 </ul>
             </div>
         </template>
@@ -93,12 +93,12 @@
             <div class="form-field check-box">
                 <div class="question">
                     <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="">-</button>
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
                 </div>
 
                 <ul class="answer-list">
-                    <li>
-                        <input type="checkbox" disabled><input type="text" placeholder="Answer">
+                    <li class="list-item">
+                        <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
                         <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
                     </li>
 
@@ -108,15 +108,15 @@
         </template>
 
         <template id="radio-tmpl">
-            <li>
-                <input type="radio" disabled><input type="text" placeholder="Answer">
+            <li class="list-item">
+                <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
                 <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
             </li>
         </template>
 
         <template id="checkbox-tmpl">
-            <li>
-                <input type="checkbox" disabled><input type="text" placeholder="Answer">
+            <li class="list-item">
+                <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
                 <button class="remove-form-element" onclick="removeFormElement(this, 'checkbox');" title="Remove list element"  form="">-</button>
             </li>
         </template>
