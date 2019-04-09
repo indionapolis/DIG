@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import os
 import uuid
+import redis
 
 from division_core import divide
 
@@ -19,6 +20,10 @@ SKILL_SET = []
 ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
+
+app.database = redis.Redis(host='redis', port=6379)
+
+print(app.database.get('alan'))
 
 CORS(app)
 
@@ -69,7 +74,7 @@ def divide_into_groups():
 
         configuration = json.loads(request.data)
 
-        divide(configuration, file)
+        divide(configuration, f'{WORKING_FOLDER}/{file}')
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(configuration), status=200)

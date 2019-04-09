@@ -1,9 +1,8 @@
 import pandas as pd
-import app
 
 
 def divide(configuration, file):
-    df = pd.read_excel(f'{app.WORKING_FOLDER}/{file}')
+    df = pd.read_excel(file)
     # to send JSON response
     people = df.to_dict('records')
     df['project'] = ['' for i in range(len(df))]
