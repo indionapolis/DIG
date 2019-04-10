@@ -96,7 +96,32 @@ def download():
 
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
-    pass
+    if request.method == 'GET':
+        data = json.loads(request.data)
+        try:
+            email = data['email']
+        except KeyError:
+            return Response(status=400)
+
+        proj_list = app.database.lrange(email, 1, -1)
+        result = {'email': email, 'titles': []}
+        for item in proj_list:
+            result['titles'].append(json.loads(item)[1])
+
+        return Response(json.dumps(result), status=200)
+
+    else:
+        data = json.loads(request.data)
+        try:
+            form_id = data['form_id']
+            title = data['title']
+            email = data['email']
+        except KeyError:
+            return Response(status=400)
+
+        app.database.rpush(email, json.dumps([form_id, title]))
+
+        return Response(status=200)
 
 
 @app.route('/skill_suggestion', methods=['GET'])
@@ -128,6 +153,7 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
+    # todo remove
     SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
                                                                                'r').read().split('\n')
     app.run(debug=False, host='0.0.0.0', port=5000)
