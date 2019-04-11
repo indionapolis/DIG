@@ -21,9 +21,8 @@ ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
 
-app.database = redis.Redis(host='redis', port=6379)
+app.database = redis.Redis(host='localhost', port=6379)
 
-print(app.database.get('alan'))
 
 CORS(app)
 
@@ -34,6 +33,45 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def upload_adapter(form_id: str) -> str:
+    # todo download result from outsource
+    # filename = file.filename
+    # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    filename = 'filename'
+    return filename
+
+
+@app.route('/upload_from_outsource', methods=['GET'])
+def upload_from_outsource():
+    data = json.loads(request.data)
+    try:
+        form_id = data['form_id']
+    except KeyError:
+        return Response(status=400)
+
+    filename = upload_adapter(form_id)
+
+    if filename and allowed_file(filename):
+
+        # map downloaded files to users
+        uid = str(uuid.uuid4())
+        FILES_MAP[uid] = filename
+
+        # return meta data
+        df = pd.read_excel(f'{UPLOAD_FOLDER}/{filename}')
+
+        result = dict(
+            name=filename,
+            len=len(df),
+            columns=list(df.keys())
+        )
+
+        os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
+        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+    else:
+        return Response(status=400)
 
 
 @app.route('/upload', methods=['POST'])
@@ -104,9 +142,12 @@ def projects():
             return Response(status=400)
 
         proj_list = app.database.lrange(email, 1, -1)
-        result = {'email': email, 'titles': []}
+        result = {'email': email, 'projects': []}
         for item in proj_list:
-            result['titles'].append(json.loads(item)[1])
+            result['projects'].append({
+                'title': json.loads(item)[1],
+                'form_id': json.loads(item)[0]
+            })
 
         return Response(json.dumps(result), status=200)
 
