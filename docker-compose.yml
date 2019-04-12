@@ -4,9 +4,13 @@ services:
     depends_on:
       - redis
     build: ./backend/
+    container_name: dig_backend
     ports:
      - "5000:5000"
   frontend:
+    container_name: dig_frontend
+    depends_on:
+    - backend
     build:
       context: ./frontend/
       args:
@@ -14,6 +18,7 @@ services:
     ports:
      - "80:80"
   redis:
+    container_name: dig_db
     image: "redis:latest"
     volumes:
       - $HOME/data:/data

@@ -3,6 +3,7 @@ from flask_cors import CORS
 import pandas as pd
 import json
 import os
+import sys
 import uuid
 import redis
 
@@ -26,7 +27,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-app.database = redis.Redis(host='localhost', port=6379)
+app.database = redis.Redis(host='redis' if len(sys.argv) == 2 and sys.argv[1] == 'docker' else 'localhost', port=6379)
 
 app.outsource = TypeForm(app.config['UPLOAD_FOLDER'])
 
@@ -105,11 +106,9 @@ def divide_into_groups():
         uid = request.headers['uuid']
         file = FILES_MAP[uid]
 
-
         configuration = json.loads(request.data)
 
         divide(configuration, f'{WORKING_FOLDER}/{file}')
-
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(configuration), status=200)
