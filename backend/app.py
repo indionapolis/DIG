@@ -91,7 +91,7 @@ def upload_file():
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
-        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+        return Response(json.dumps(result), headers={'uuid': uid, 'Access-Control-Expose-Headers': 'uuid'}, status=200)
     else:
         return Response(status=400)
 
@@ -105,9 +105,11 @@ def divide_into_groups():
         uid = request.headers['uuid']
         file = FILES_MAP[uid]
 
+
         configuration = json.loads(request.data)
 
         divide(configuration, f'{WORKING_FOLDER}/{file}')
+
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(configuration), status=200)
@@ -163,9 +165,12 @@ def projects():
 @app.route('/skill_suggestion', methods=['GET'])
 def skill_suggestion():
     try:
-        sub = request.form['input']
+        sub = str(request.args.get('input'))
+        print(sub)
 
         res = [match for match in SKILL_SET if match.lower().startswith(sub.lower())]
+        print(res)
+        print(SKILL_SET)
 
         return Response(json.dumps(res), status=200)
     except KeyError:

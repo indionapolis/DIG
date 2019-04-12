@@ -15,10 +15,12 @@ class UploadDataPage extends Component {
       method: 'POST',
       body: formData
     })
-      .then(d => d.json())
-      .then(data => {
-        this.props.onUpload(data);
-      })
+      .then(d => {
+        d.json().then((data) => {
+          document.cookie = `uuid=${d.headers.get("uuid")}`;
+          this.props.onUpload(data, d.headers.get("uuid"));
+        })
+      });
   }
 
   render() {
