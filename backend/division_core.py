@@ -85,4 +85,4 @@ def divide(configuration, file):
                     # if we did not find more people for project
                     break
 
-    df.to_excel(f'{app.WORKING_FOLDER}/{file}', index=False)
+    df.to_excel(file, index=False)
