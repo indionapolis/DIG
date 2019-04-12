@@ -6,6 +6,7 @@ import os
 import uuid
 import redis
 
+from type_form import TypeForm
 from division_core import divide
 
 UPLOAD_FOLDER = './uploads'
@@ -21,26 +22,20 @@ ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
 
-app.database = redis.Redis(host='localhost', port=6379)
-
-
-CORS(app)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+app.database = redis.Redis(host='localhost', port=6379)
+
+app.outsource = TypeForm(app.config['UPLOAD_FOLDER'])
+
+CORS(app)
 
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def upload_adapter(form_id: str) -> str:
-    # todo download result from outsource
-    # filename = file.filename
-    # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = 'filename'
-    return filename
 
 
 @app.route('/upload_from_outsource', methods=['GET'])
@@ -51,7 +46,7 @@ def upload_from_outsource():
     except KeyError:
         return Response(status=400)
 
-    filename = upload_adapter(form_id)
+    filename = app.outsource.upload_adapter(form_id)
 
     if filename and allowed_file(filename):
 
@@ -141,7 +136,7 @@ def projects():
         except KeyError:
             return Response(status=400)
 
-        proj_list = app.database.lrange(email, 1, -1)
+        proj_list = app.database.lrange(email, 0, -1)
         result = {'email': email, 'projects': []}
         for item in proj_list:
             result['projects'].append({

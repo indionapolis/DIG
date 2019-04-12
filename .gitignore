@@ -105,3 +105,6 @@ venv.bak/
 .DS_Store
 
 .idea/
+
+.scannerwork/
+sonar-project.properties
