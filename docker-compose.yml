@@ -1,6 +1,8 @@
 version: '3'
 services:
   backend:
+    depends_on:
+      - redis
     build: ./backend/
     ports:
      - "5000:5000"
@@ -11,3 +13,7 @@ services:
         - backend_endpoint=http://localhost:5000
     ports:
      - "80:80"
+  redis:
+    image: "redis:latest"
+    volumes:
+      - $HOME/data:/data

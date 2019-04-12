@@ -4,6 +4,10 @@ import pandas as pd
 import json
 import os
 import uuid
+import redis
+
+from type_form import TypeForm
+from division_core import divide
 
 UPLOAD_FOLDER = './uploads'
 WORKING_FOLDER = './working'
@@ -18,10 +22,15 @@ ALLOWED_EXTENSIONS = {'xlsx', 'csv', 'xls'}
 
 app = Flask(__name__)
 
-CORS(app)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+app.database = redis.Redis(host='localhost', port=6379)
+
+app.outsource = TypeForm(app.config['UPLOAD_FOLDER'])
+
+CORS(app)
 
 
 def allowed_file(filename):
@@ -29,9 +38,39 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.route('/upload_from_outsource', methods=['GET'])
+def upload_from_outsource():
+    data = json.loads(request.data)
+    try:
+        form_id = data['form_id']
+    except KeyError:
+        return Response(status=400)
+
+    filename = app.outsource.upload_adapter(form_id)
+
+    if filename and allowed_file(filename):
+
+        # map downloaded files to users
+        uid = str(uuid.uuid4())
+        FILES_MAP[uid] = filename
+
+        # return meta data
+        df = pd.read_excel(f'{UPLOAD_FOLDER}/{filename}')
+
+        result = dict(
+            name=filename,
+            len=len(df),
+            columns=list(df.keys())
+        )
+
+        os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
+        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+    else:
+        return Response(status=400)
+
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
-
     file = request.files['file']
 
     if file and allowed_file(file.filename):
@@ -66,94 +105,14 @@ def divide_into_groups():
         uid = request.headers['uuid']
         file = FILES_MAP[uid]
 
-        projects = json.loads(request.data)
-        df = pd.read_excel(f'{WORKING_FOLDER}/{file}')
-        # to send JSON response
-        people = df.to_dict('records')
-        df['project'] = ['' for i in range(len(df))]
-        df['team'] = ['' for i in range(len(df))]
 
-        soft_skills = set(map(lambda x: x.lower(), open('./dataset/soft_skills.txt').read().split('\n')))
+        configuration = json.loads(request.data)
 
-        for project in projects:
-            for team in project['teams']:
-                team_skills_set = set(map(lambda x: x.lower(), team["skills"]))
-                team['members'] = []
-                # in case team do not need soft skills
-                skill_flag = len(soft_skills.intersection(team_skills_set))
+        divide(configuration, f'{WORKING_FOLDER}/{file}')
 
-                # search for people for team
-                while len(team_skills_set) and len(team['members']) < team['size']:
-
-                    # search for best people for team
-                    best_person = None
-                    best_person_id = 0
-                    best_intersection = 0
-                    for i, person in enumerate(df.to_dict('records')):
-
-                        # if person is free
-                        if person['project'] == '':
-                            person_hard_skills_set = set(map(lambda x: x.lower(), person['Hard Skills'].split(', ')))
-                            person_soft_skills_set = set(map(lambda x: x.lower(), person['Soft Skills'].split(', ')))
-
-                            # looking for person with biggest skill intersection with project
-                            hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
-                            soft_intersection_len = len(person_soft_skills_set.intersection(team_skills_set))
-                            if hard_intersection_len > best_intersection and (soft_intersection_len or not skill_flag):
-                                best_intersection = hard_intersection_len
-                                best_person = person
-                                best_person_id = i
-
-                    # add best_person to the team
-                    if best_person:
-                        df['project'][best_person_id] = project['name']
-                        df['team'][best_person_id] = team['name']
-                        best_person_skills_set = set(map(lambda x: x.lower(), best_person['Hard Skills'].split(', ')))
-                        team_skills_set = team_skills_set.difference(best_person_skills_set)
-                        team['members'].append(people[best_person_id])
-                    else:
-                        # if we did not find more people for project
-                        break
-
-        for project in projects:
-            for team in project['teams']:
-                team_skills_set = set(map(lambda x: x.lower(), team["skills"]))
-                # in case team do not need soft skills
-                skill_flag = len(soft_skills.intersection(team_skills_set))
-
-                while len(team['members']) < team['size']:
-                    # search for best people for team
-                    best_person = None
-                    best_person_id = 0
-                    best_intersection = 0
-                    for i, person in enumerate(df.to_dict('records')):
-
-                        # if person is free
-                        if person['project'] == '':
-                            person_hard_skills_set = set(map(lambda x: x.lower(), person['Hard Skills'].split(', ')))
-                            person_soft_skills_set = set(map(lambda x: x.lower(), person['Soft Skills'].split(', ')))
-
-                            # looking for person with biggest skill intersection with project
-                            hard_intersection_len = len(person_hard_skills_set.intersection(team_skills_set))
-                            soft_intersection_len = len(person_soft_skills_set.intersection(team_skills_set))
-                            if hard_intersection_len > best_intersection and (soft_intersection_len or not skill_flag):
-                                best_intersection = hard_intersection_len
-                                best_person = person
-                                best_person_id = i
-
-                    # add best_person to the team
-                    if best_person:
-                        df['project'][best_person_id] = project['name']
-                        df['team'][best_person_id] = team['name']
-                        team['members'].append(people[best_person_id])
-                    else:
-                        # if we did not find more people for project
-                        break
-
-        df.to_excel(f'{WORKING_FOLDER}/{file}', index=False)
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
-        return Response(json.dumps(projects), status=200)
+        return Response(json.dumps(configuration), status=200)
     except KeyError:
         return Response(status=401)
 
@@ -168,6 +127,39 @@ def download():
         return send_from_directory(DELETE_FOLDER, file)
     except KeyError:
         return Response(status=401)
+
+
+@app.route('/projects', methods=['GET', 'POST'])
+def projects():
+    if request.method == 'GET':
+        data = json.loads(request.data)
+        try:
+            email = data['email']
+        except KeyError:
+            return Response(status=400)
+
+        proj_list = app.database.lrange(email, 0, -1)
+        result = {'email': email, 'projects': []}
+        for item in proj_list:
+            result['projects'].append({
+                'title': json.loads(item)[1],
+                'form_id': json.loads(item)[0]
+            })
+
+        return Response(json.dumps(result), status=200)
+
+    else:
+        data = json.loads(request.data)
+        try:
+            form_id = data['form_id']
+            title = data['title']
+            email = data['email']
+        except KeyError:
+            return Response(status=400)
+
+        app.database.rpush(email, json.dumps([form_id, title]))
+
+        return Response(status=200)
 
 
 @app.route('/skill_suggestion', methods=['GET'])
@@ -202,5 +194,7 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
-    SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt', 'r').read().split('\n')
+    # todo remove
+    SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
+                                                                               'r').read().split('\n')
     app.run(debug=False, host='0.0.0.0', port=5000)
