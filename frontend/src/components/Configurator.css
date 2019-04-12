@@ -105,6 +105,35 @@
   margin-bottom: 5px;
 }
 
+.input_skill_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.skill_suggestions {
+  display: none;
+  position: absolute;
+  left: 10px;
+  top: 35px;
+  max-height: 100px;
+  background-color: #fff;
+  overflow-y: scroll;
+  width: 120px;
+  border-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: 1.5px solid #efefef;
+}
+
+.suggestion_skill_elem {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.suggestion_skill_elem:hover {
+  background: #efefef;
+}
+
 .divide {
   position: absolute;
   right: 45px;
@@ -114,4 +143,62 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+}
+
+.remove_image {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 16px;
+
+  opacity: .6;
+  cursor: pointer;
+}
+
+.remove_image:hover {
+  opacity: 1;
+}
+
+.remove_project {
+  margin-left: 0;
+  padding: 3px 5px 0;
+  border: 2px rgba(255, 82, 48, .7) solid;
+  background: #fff;
+}
+
+.remove_project:hover {
+  margin-left: 0;
+  border-color: rgba(255, 82, 48, 1);
+  background: #fff;
+}
+
+.remove_project:hover .remove_image {
+  opacity: 1;
+}
+
+.clone_image {
+  display: none;
+  position: absolute;
+  right: 21px;
+  top: 0;
+  width: 16px;
+
+  opacity: .6;
+  cursor: pointer;
+}
+
+.clone_image:hover {
+  opacity: 1;
+}
+
+.team_element:hover .clone_image {
+  display: block;
+}
+
+.remove_image_target {
+  display: none;
+}
+
+.team_element:hover .remove_image_target {
+  display: block;
 }
