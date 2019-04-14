@@ -23,6 +23,10 @@ class TypeForm:
     def get_labels(self, form_id: str) -> List[str]:
         headers = {'Authorization': self.TYPE_FORM_TOKEN}
         r = requests.get(f'https://api.typeform.com/forms/{form_id}', headers=headers)
+
+        if r.status_code == 404:
+            return []
+
         fields = r.json()['fields']
 
         return [field['title'] for field in fields]
@@ -30,6 +34,10 @@ class TypeForm:
     def get_data(self, form_id: str) -> List:
         headers = {'Authorization': self.TYPE_FORM_TOKEN}
         r = requests.get(f'https://api.typeform.com/forms/{form_id}/responses', headers=headers)
+
+        if r.status_code == 404:
+            return []
+
         responses = r.json()['items']
 
         return [[self.retrieve_answer(answer) for answer in response['answers']] for response in responses]
@@ -38,6 +46,9 @@ class TypeForm:
         labels = self.get_labels(form_id)
         data = self.get_data(form_id)
         filename = f'{form_id}.xlsx'
+
+        if not labels or not data:
+            return ''
 
         df = DataFrame(data=data, columns=labels)
 

@@ -3,6 +3,9 @@ import pandas as pd
 
 def divide(configuration, file):
     df = pd.read_excel(file)
+    # needed to support TypeForm
+    mapping = dict(zip(df.columns[1:3], ['Hard Skills', 'Soft Skills']))
+    df.rename(columns=mapping, inplace=True)
     # to send JSON response
     people = df.to_dict('records')
     df['project'] = ['' for i in range(len(df))]
@@ -85,4 +88,7 @@ def divide(configuration, file):
                     # if we did not find more people for project
                     break
 
+    # needed to support TypeForm
+    inverse_mapping = dict([[v, k] for k, v in mapping.items()])
+    df.rename(columns=inverse_mapping, inplace=True)
     df.to_excel(file, index=False)

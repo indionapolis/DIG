@@ -41,7 +41,7 @@ def allowed_file(filename):
 
 @app.route('/upload_from_outsource', methods=['GET'])
 def upload_from_outsource():
-    data = json.loads(request.data)
+    data = json.loads(request.data) if request.data else {}
     try:
         form_id = data['form_id']
     except KeyError:
@@ -65,7 +65,7 @@ def upload_from_outsource():
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
-        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+        return Response(json.dumps(result), headers={'uuid': uid, 'Access-Control-Expose-Headers': 'uuid'}, status=200)
     else:
         return Response(status=400)
 
@@ -131,7 +131,7 @@ def download():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        data = json.loads(request.data)
+        data = json.loads(request.data) if request.data else {}
         try:
             email = data['email']
         except KeyError:
