@@ -153,13 +153,13 @@ section .block-edit-panel {
     align-items: stretch;
 }
 
-section .block-edit-panel #add-form-field-panel {
+section .block-edit-panel .add-form-field-panel {
     padding: 10px 0;
     display: flex;
     justify-content: center;
 }
 
-section .block-edit-panel #add-form-field-panel button {
+section .block-edit-panel .add-form-field-panel button {
     height: 30px;
     width: 30px;
     min-height: 30px;
@@ -173,36 +173,36 @@ section .block-edit-panel #add-form-field-panel button {
     opacity: 0.6;
 }
 
-section .block-edit-panel #add-form-field {
+section .block-edit-panel .add-form-field {
     background-color: rgb(170, 170, 170);
     transform: rotate(0deg);
 }
 
-section .block-edit-panel #add-form-field-cont {
+section .block-edit-panel .add-form-field-cont {
     display: inline-flex;
     overflow: hidden;
     width: 110px;
     flex-direction: row-reverse;
 }
 
-section .block-edit-panel #add-form-field-cont button{
+section .block-edit-panel .add-form-field-cont button{
     background-color: #60269e80;
     margin-left: 5px;
 }
 
-section .block-edit-panel #add-form-field-panel button:hover {
+section .block-edit-panel .add-form-field-panel button:hover {
     opacity: 1;
 }
 
-section .block-edit-panel #add-text-qn {
+section .block-edit-panel .add-text-qn {
     background-image: url("img/text-field.svg");
 }
 
-section .block-edit-panel #add-rad-btn {
+section .block-edit-panel .add-rad-btn {
     background-image: url("img/radio-button.svg");
 }
 
-section .block-edit-panel #add-chk-box {
+section .block-edit-panel .add-chk-box {
     background-image: url("img/check-box.svg");
 }
 
