@@ -5,9 +5,25 @@ class UploadDataPage extends Component {
   constructor(props) {
     super(props);
     this.onFileUpload = this.onFileUpload.bind(this);
+
+    this.state = {
+      projects: []
+    }
   }
 
-  onFileUpload(e) {
+  componentDidMount() {
+    let {email} = this.props;
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/projects?email=${email}`)
+        .then(d => d.json())
+        .then(data => {
+          let {projects} = data;
+          this.setState({
+            projects
+          })
+        })
+  }
+
+  onFileUpload() {
     let file = document.getElementById("inputData").files[0];
     let formData = new FormData();
     formData.append("file", file);
@@ -26,6 +42,9 @@ class UploadDataPage extends Component {
   render() {
     return (
       <div className="data_upload">
+        <div className="select_data">
+          {this.state.projects.map((d) => <div>{d.title}</div>)}
+        </div>
         <input id="inputData" type="file" onChange={this.onFileUpload} />
       </div>
     );

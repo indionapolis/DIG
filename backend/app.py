@@ -39,7 +39,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/upload_from_outsource', methods=['GET'])
+@app.route('/upload_from_outsource', methods=['POST'])
 def upload_from_outsource():
     data = json.loads(request.data) if request.data else {}
     try:
@@ -131,9 +131,9 @@ def download():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        data = json.loads(request.data) if request.data else {}
+        data = request.args if request.args else {}
         try:
-            email = data['email']
+            email = data.get('email')
         except KeyError:
             return Response(status=400)
 

@@ -7,13 +7,14 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentState: "0",
+      currentState: "4",
       sample: "kek",
       metadata: null,
       config: [],
       resultConfig: [],
       templates: [],
-      uuid: ""
+      uuid: "",
+      email: this.getCookie("email") || ""
     };
     this.onUpload = this.onUpload.bind(this);
     this.goToConfig = this.goToConfig.bind(this);
@@ -21,6 +22,20 @@ class App extends Component {
     this.goToRetrieveResults = this.goToRetrieveResults.bind(this);
     this.fetchDivisionResult = this.fetchDivisionResult.bind(this);
     this.goToPrevState = this.goToPrevState.bind(this);
+    this.onLoginEnter = this.onLoginEnter.bind(this);
+  }
+
+  getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined
+  }
+
+  componentDidMount() {
+    if (this.getCookie("email")) {
+      this.setState({currentState: "0"})
+    }
   }
 
   // stage 1
@@ -141,6 +156,16 @@ class App extends Component {
     console.log(config)
   }
 
+  onLoginEnter() {
+    this.setState({
+      currentState: '0'
+    })
+  }
+
+  onLogout() {
+
+  }
+
   render() {
     return (
       <div style={{position: "absolute", height: '100%', width: '100%'}}>
@@ -150,7 +175,8 @@ class App extends Component {
                    onConfigAction={this.onConfigAction}
                    goToRetrieveResults={this.goToRetrieveResults}
                    fetchDivisionResult={this.fetchDivisionResult}
-                   goToPrevState={this.goToPrevState} />
+                   goToPrevState={this.goToPrevState}
+                   onLoginEnter={this.onLoginEnter} />
       </div>
     );
   }

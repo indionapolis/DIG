@@ -19,3 +19,12 @@
   margin-top: 20px;
   align-self: flex-start;
 }
+
+.select_data {
+  height: 60%;
+  flex: 1;
+}
+
+#inputData {
+  flex: 1;
+}
