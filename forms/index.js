@@ -94,14 +94,14 @@ async function makeRequest(url, body={}, method) {
                   "Content-Type": "application/json",
                   "Authorization": "Bearer " + token
               },
+              "body" : JSON.stringify(body)
           };
 
-    if (Object.keys(body).length > 0)
-        data.body = JSON.stringify(body);
+    var response = await fetch(url, data);
 
-    const response = await fetch(url, data);
-    
-    return await response.json();
+    return await response.text().then(function(text) {
+        return text ? JSON.parse(text) : {}
+    })
 }
 
 /**
