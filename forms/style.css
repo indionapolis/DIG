@@ -74,6 +74,7 @@ section #preload {
     background-position: center;
     background-size: 100px 100px;
     background-repeat: no-repeat;
+    transition: unset;
 }
 
 section #add-block {

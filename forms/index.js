@@ -51,13 +51,12 @@ function saveBlock(saveBtn) {
     preload.style.display = "block";
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
-        const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
-                        + '<button class="edit" title="Edit form"></button>'
-                        + '<button class="download" onclick="downloadDataset(this);" title="Download dataset"></button>'
-                        + '<button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>';
-        saveBtn.parentElement.innerHTML = toolsHtml.trim();
 
+        const blockToolsTmpl = document.getElementById('block-tools-tmpl'),
+              blockTools = getElementFromTemplate(blockToolsTmpl);
+        
         hide(saveBtn, 'block-edit-panel');
+        block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
         preload.style.display = "none";
     });
 }
@@ -67,14 +66,20 @@ function saveBlock(saveBtn) {
  * @param {*} deleteBtn button which activated current function.
  */
 function deleteBlock(deleteBtn) {
-    block = getGrandParent(deleteBtn);
+    var block = getGrandParent(deleteBtn),
+        preload = document.getElementById('preload');
+
+    preload.style.display = "block";
 
     if (!block.classList.contains('empty')) {
         const formId = block.dataset.formId,
               url = 'https://api.typeform.com/forms/' + formId;
 
         const promise = makeRequest(url, {}, 'DELETE');
-        promise.then(block.remove());
+        promise.then(function(data) {            
+            block.remove();
+            preload.style.display = "none";
+        });
     } else
         block.remove();
 }
@@ -198,8 +203,10 @@ function getElementFromTemplate(template) {
  * Save link to the clipboard.
  * @param {*} link Link to be saved.
  */
-function copyToClipboard(link) {
-    const el = document.createElement('textarea');
+function copyToClipboard(btn) {
+    const formId = getGrandParent(btn).dataset.formId,
+          el = document.createElement('textarea');
+    var link = 'https://ireknazmiev.typeform.com/to/' + formId
     el.value = link;
     el.style.position = 'absolute';
     el.style.left = '-9000px';
