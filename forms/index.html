@@ -123,8 +123,8 @@
 
         <template id="block-tools-tmpl">
             <div class="block-tools">
-                <button class="share" title="Get the link on form" onclick="copyToClipboard(this);"></button>
-                <button class="edit" title="Edit form" onclick="hide(this, 'block-edit-panel');"></button>
+                <button class="share" onclick="copyToClipboard(this);" title="Get the link on form"></button>
+                <button class="edit" onclick="updateForm(this);" title="Edit form"></button>
                 <button class="download" onclick="downloadDataset(this);" title="Download dataset"></button>
                 <button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>
             </div>

@@ -37,8 +37,7 @@ function saveBlock(saveBtn) {
         return;
     }
     
-    projectNameInput.remove();
-    block.firstElementChild.textContent += title;
+    projectNameInput.disabled = true;
 
     block.classList.remove('empty');
 
@@ -69,13 +68,14 @@ function deleteBlock(deleteBtn) {
     var block = getGrandParent(deleteBtn),
         preload = document.getElementById('preload');
 
-    preload.style.display = "block";
-
     if (!block.classList.contains('empty')) {
         const formId = block.dataset.formId,
               url = 'https://api.typeform.com/forms/' + formId;
 
+        preload.style.display = "block";
+
         const promise = makeRequest(url, {}, 'DELETE');
+
         promise.then(function(data) {            
             block.remove();
             preload.style.display = "none";
@@ -121,6 +121,42 @@ function createForm(title, fields=[]) {
     };
 
     return makeRequest(url, data, "POST");
+}
+
+/**
+ * Update form data with given new information.
+ * @param {*} btn button which activated current function.
+ */
+function updateForm(btn) {
+    const block = getGrandParent(btn),
+          blockTitle = block.getElementsByClassName('block-title')[0].firstElementChild;
+
+    if (btn.classList.contains('edit')) {
+        btn.classList.replace('edit', 'save');
+        btn.title = "Save changes";
+        hide(btn, 'block-edit-panel');
+        blockTitle.disabled = false;
+    }
+    else if (btn.classList.contains('save')) {
+        const preload = document.getElementById('preload'),
+              form = block.getElementsByTagName('form')[0],
+              formId = block.dataset.formId,
+              url = "https://api.typeform.com/forms/" + formId,
+              data = {
+                  "title" : blockTitle.value,
+                  "fields" : getFormFields(form)
+              };
+        
+        preload.style.display = "block";
+
+        makeRequest(url, data, "PUT").then(function(data) {
+            btn.classList.replace('save', 'edit');
+            btn.title = "Edit form";
+            preload.style.display = "none";
+            blockTitle.disabled = true;
+            hide(btn, 'block-edit-panel');
+        })
+    }
 }
 
 /**

@@ -135,6 +135,7 @@ section .block-title input {
     font-family: inherit;
     font-weight: inherit;
     text-align: center;
+    color: black;
 }
 
 section .block-title input::placeholder {
