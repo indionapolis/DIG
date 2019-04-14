@@ -27,9 +27,9 @@ function addBlock() {
  * @param {*} saveBtn button which activated current function.
  */
 function saveBlock(saveBtn) {
-    block = getGrandParent(saveBtn);
-    var projectNameInput = block.getElementsByTagName('input')[0];
-    var title = projectNameInput.value;
+    var block = getGrandParent(saveBtn),
+        projectNameInput = block.getElementsByTagName('input')[0],
+        title = projectNameInput.value;
     
     if (title.replace(/\s/g, '') == "") {   // handle empty project name problem
         alert("Your project name is empty! Fill in something.");
@@ -57,8 +57,7 @@ function saveBlock(saveBtn) {
                         + '<button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>';
         saveBtn.parentElement.innerHTML = toolsHtml.trim();
 
-        const editPanel = block.getElementsByClassName('block-edit-panel')[0];
-        hideEditPanel(editPanel);
+        hide(saveBtn, 'block-edit-panel');
         preload.style.display = "none";
     });
 }
@@ -242,30 +241,20 @@ function downloadJson(exportObj, exportName){
 }
 
 /**
- * Hide and show the element with given ID
+ * Hide and show the element with given class.
  * @param {*} btn button which activated current function.
- * @param {*} blockId id of element to be hidden/shown
+ * @param {*} blockClass class of element to be hidden/shown.
  */
-function hide(btn, blockId) {
-    block = document.getElementById(blockId);
-    if (block.classList.length == 0) {
+function hide(btn, blockClass) {
+    block = getGrandParent(btn).getElementsByClassName(blockClass)[0];
+    if (!block.classList.contains('hidden')) {
         block.classList.add("hidden");
-        btn.style.transform = "rotate(0deg)";
+        btn.classList.add("activated");
     }
     else {
         block.classList.remove("hidden");
-        btn.style.transform = "rotate(45deg)";
+        btn.classList.remove("activated");
     }
-}
-
-/**
- * Hide edit panel smoothly.
- * @param {*} editPanel panel element to be hidden smoothly.
- */
-function hideEditPanel(editPanel) {
-    editPanel.style.overflow = "hidden";
-    editPanel.style.padding = "0";
-    editPanel.style.maxHeight = "0";
 }
 
 /**
