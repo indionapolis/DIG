@@ -108,3 +108,8 @@ venv.bak/
 
 .scannerwork/
 sonar-project.properties
+
+backend/working/
+backend/uploads/
+backend/results/
+backend/delete/
