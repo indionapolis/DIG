@@ -74,7 +74,7 @@ function deleteBlock(deleteBtn) {
 
         preload.style.display = "block";
 
-        const promise = makeRequest(url, {}, 'DELETE');
+        const promise = makeRequest(url, {}, 'DELETE', "cors");
 
         promise.then(function(data) {            
             block.remove();
@@ -90,7 +90,7 @@ function deleteBlock(deleteBtn) {
  * @param {*} body Data to be transfered.
  * @param {*} method Method of a request (GET, POST, ...).
  */
-async function makeRequest(url, body={}, method) {
+async function makeRequest(url, body={}, method, mode) {
     const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF",
           data = {
               "method" : method,
@@ -98,8 +98,11 @@ async function makeRequest(url, body={}, method) {
                   "Content-Type": "application/json",
                   "Authorization": "Bearer " + token
               },
-              "body" : JSON.stringify(body)
+              "mode" : mode
           };
+
+    if (Object.keys(body).length > 0)
+        data.body = JSON.stringify(body);
 
     var response = await fetch(url, data);
 
@@ -120,7 +123,7 @@ function createForm(title, fields=[]) {
         "fields" : fields
     };
 
-    return makeRequest(url, data, "POST");
+    return makeRequest(url, data, "POST", "cors");
 }
 
 /**
@@ -149,7 +152,7 @@ function updateForm(btn) {
         
         preload.style.display = "block";
 
-        makeRequest(url, data, "PUT").then(function(data) {
+        makeRequest(url, data, "PUT", "cors").then(function(data) {
             btn.classList.replace('save', 'edit');
             btn.title = "Edit form";
             preload.style.display = "none";
@@ -262,7 +265,7 @@ function downloadDataset(btn) {
           formId = block.dataset.formId,
           url = "https://api.typeform.com/forms/"+ formId +"/responses";
     
-    var promise = makeRequest(url, {}, "GET");  // get json
+    var promise = makeRequest(url, {}, "GET", "cors");  // get json
     promise.then(function(data) {
         downloadJson(data, "dataset");
     });
