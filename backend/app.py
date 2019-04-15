@@ -33,6 +33,9 @@ app.outsource = TypeForm(app.config['UPLOAD_FOLDER'])
 
 CORS(app)
 
+SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
+                                                                               'r').read().split('\n')
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -165,11 +168,8 @@ def projects():
 def skill_suggestion():
     try:
         sub = str(request.args.get('input'))
-        print(sub)
 
         res = [match for match in SKILL_SET if match.lower().startswith(sub.lower())]
-        print(res)
-        print(SKILL_SET)
 
         return Response(json.dumps(res), status=200)
     except KeyError:
@@ -193,7 +193,4 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
-    # todo remove
-    SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
-                                                                               'r').read().split('\n')
     app.run(debug=False, host='0.0.0.0', port=5000)
