@@ -17,6 +17,14 @@ services:
         - backend_endpoint=http://localhost:5000
     ports:
      - "80:80"
+  forms:
+    container_name: dig_forms
+    depends_on:
+      - backend
+    build:
+      context: ./forms/
+    ports:
+    - "81:81"
   redis:
     container_name: dig_db
     image: "redis:latest"
