@@ -19,3 +19,30 @@
   margin-top: 20px;
   align-self: flex-start;
 }
+
+.select_data {
+  height: 60%;
+  flex: 1;
+}
+
+#inputData {
+  flex: 1;
+}
+
+.project_item{
+  display: flex;
+  flex-direction: column;
+  border-style: solid;
+  border-color: #f4f4f4;
+  border-radius: 5px;
+  border-width: 2px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.project_item:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 4px rgba(1, 1, 1, 0.05);
+  border-color: rgba(47, 181, 36, 0.41);
+  border-width: 2px;
+}

@@ -7,11 +7,14 @@ class App extends Component {
     super(props);
 
     this.state = {
-      currentState: "0",
+      currentState: "4",
       sample: "kek",
       metadata: null,
       config: [],
-      resultConfig: []
+      resultConfig: [],
+      templates: [],
+      uuid: "",
+      email: this.getCookie("email") || ""
     };
     this.onUpload = this.onUpload.bind(this);
     this.goToConfig = this.goToConfig.bind(this);
@@ -19,13 +22,28 @@ class App extends Component {
     this.goToRetrieveResults = this.goToRetrieveResults.bind(this);
     this.fetchDivisionResult = this.fetchDivisionResult.bind(this);
     this.goToPrevState = this.goToPrevState.bind(this);
+    this.onLoginEnter = this.onLoginEnter.bind(this);
+  }
+
+  getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined
+  }
+
+  componentDidMount() {
+    if (this.getCookie("email")) {
+      this.setState({currentState: "0"})
+    }
   }
 
   // stage 1
-  onUpload(data) {
+  onUpload(data, uuid) {
     this.setState({
       metadata: data,
-      currentState: '0.1'
+      currentState: '0.1',
+      uuid: uuid
     })
   }
 
@@ -76,16 +94,18 @@ class App extends Component {
     let { config } = this.state;
 
     if (action === "addProject") {
+      let { name } = data;
       this.setState({
         config: [...config, {
-          name: null,
+          name: name ? name : `Проект#${config.length}`,
           teams: []
         }]
       })
     } else if (action === "addTeam") {
+      let { name } = data;
       config[data].teams = [...config[data].teams, {
-        name: null,
-        size: null,
+        name: name ? name : `Команда#${config[data].teams.length}`,
+        size: "",
         skills: []
       }];
       this.setState({
@@ -111,7 +131,39 @@ class App extends Component {
       let { projectIndex, teamIndex, size } = data;
 
       config[projectIndex].teams[teamIndex].size = size;
+    } else if (action === "removeTeam") {
+      let { projectIndex, teamIndex } = data;
+
+      config[projectIndex].teams = [...config[projectIndex].teams.slice(0, teamIndex), ...config[projectIndex].teams.slice(teamIndex + 1)];
+      this.setState({
+        config
+      })
+    } else if (action === "removeProject") {
+      let { projectIndex } = data;
+
+      config = [...config.slice(0, projectIndex), ...config.slice(projectIndex + 1)];
+      this.setState({
+        config
+      });
+    } else if (action === "cloneTeam") {
+      let { projectIndex, teamIndex } = data;
+
+      config[projectIndex].teams = [...config[projectIndex].teams, JSON.parse(JSON.stringify(config[projectIndex].teams[teamIndex]))];
+      this.setState({
+        config
+      })
     }
+    console.log(config)
+  }
+
+  onLoginEnter() {
+    this.setState({
+      currentState: '0'
+    })
+  }
+
+  onLogout() {
+
   }
 
   render() {
@@ -123,7 +175,8 @@ class App extends Component {
                    onConfigAction={this.onConfigAction}
                    goToRetrieveResults={this.goToRetrieveResults}
                    fetchDivisionResult={this.fetchDivisionResult}
-                   goToPrevState={this.goToPrevState} />
+                   goToPrevState={this.goToPrevState}
+                   onLoginEnter={this.onLoginEnter} />
       </div>
     );
   }
