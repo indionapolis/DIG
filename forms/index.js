@@ -3,7 +3,7 @@
  * @param {String} email String with email address.
  */
 function loadBlocks(email) {
-    const promise = makeRequest("http://10.90.138.218:5000/projects?email=" + email, {}, "GET", "cors");
+    const promise = makeRequest("http://10.90.138.218:5000/projects?email" + email, {}, "GET", "cors");
     promise.then(function(data) {
         const projects = data.projects,
               preload = document.getElementById('preload');
