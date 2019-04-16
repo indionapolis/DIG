@@ -1,0 +1,22 @@
+.login {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login input {
+    border-width: 1.7px;
+    border-style: solid;
+    border-color: #efefef;
+    color: #3f3f3f;
+    border-radius: 5px;
+    padding-left: 10px;
+    outline: none;
+    height: 35px;
+    width: 200px;
+}
+
+.login input::placeholder {
+    color: #c3c3c3;
+}

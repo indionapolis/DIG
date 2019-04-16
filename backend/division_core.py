@@ -3,6 +3,9 @@ import pandas as pd
 
 def divide(configuration, file):
     df = pd.read_excel(file)
+    # needed to support TypeForm
+    mapping = dict(zip(df.columns[1:3], ['Hard Skills', 'Soft Skills']))
+    df.rename(columns=mapping, inplace=True)
     # to send JSON response
     people = df.to_dict('records')
     df['project'] = ['' for i in range(len(df))]
@@ -18,7 +21,7 @@ def divide(configuration, file):
             skill_flag = len(soft_skills.intersection(team_skills_set))
 
             # search for people for team
-            while len(team_skills_set):
+            while len(team_skills_set) and len(team['members']) < team['size']:
 
                 # search for best people for team
                 best_person = None
@@ -56,7 +59,7 @@ def divide(configuration, file):
             # in case team do not need soft skills
             skill_flag = len(soft_skills.intersection(team_skills_set))
 
-            while len(team['members']) != team['size']:
+            while len(team['members']) < team['size']:
                 # search for best people for team
                 best_person = None
                 best_person_id = 0
@@ -85,4 +88,7 @@ def divide(configuration, file):
                     # if we did not find more people for project
                     break
 
+    # needed to support TypeForm
+    inverse_mapping = dict([[v, k] for k, v in mapping.items()])
+    df.rename(columns=inverse_mapping, inplace=True)
     df.to_excel(file, index=False)

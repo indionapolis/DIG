@@ -3,6 +3,7 @@ from flask_cors import CORS
 import pandas as pd
 import json
 import os
+import sys
 import uuid
 import redis
 
@@ -26,11 +27,14 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-app.database = redis.Redis(host='localhost', port=6379)
+app.database = redis.Redis(host='redis' if len(sys.argv) == 2 and sys.argv[1] == 'docker' else 'localhost', port=6379)
 
 app.outsource = TypeForm(app.config['UPLOAD_FOLDER'])
 
 CORS(app)
+
+SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
+                                                                               'r').read().split('\n')
 
 
 def allowed_file(filename):
@@ -38,9 +42,9 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/upload_from_outsource', methods=['GET'])
+@app.route('/upload_from_outsource', methods=['POST'])
 def upload_from_outsource():
-    data = json.loads(request.data)
+    data = json.loads(request.data) if request.data else {}
     try:
         form_id = data['form_id']
     except KeyError:
@@ -64,7 +68,7 @@ def upload_from_outsource():
         )
 
         os.rename(f'{UPLOAD_FOLDER}/{filename}', f'{WORKING_FOLDER}/{filename}')
-        return Response(json.dumps(result), headers={'uuid': uid}, status=200)
+        return Response(json.dumps(result), headers={'uuid': uid, 'Access-Control-Expose-Headers': 'uuid'}, status=200)
     else:
         return Response(status=400)
 
@@ -105,11 +109,9 @@ def divide_into_groups():
         uid = request.headers['uuid']
         file = FILES_MAP[uid]
 
-
         configuration = json.loads(request.data)
 
         divide(configuration, f'{WORKING_FOLDER}/{file}')
-
 
         os.rename(f'{WORKING_FOLDER}/{file}', f'{RESULT_FOLDER}/{file}')
         return Response(json.dumps(configuration), status=200)
@@ -132,9 +134,9 @@ def download():
 @app.route('/projects', methods=['GET', 'POST'])
 def projects():
     if request.method == 'GET':
-        data = json.loads(request.data)
+        data = request.args if request.args else {}
         try:
-            email = data['email']
+            email = data.get('email')
         except KeyError:
             return Response(status=400)
 
@@ -166,11 +168,8 @@ def projects():
 def skill_suggestion():
     try:
         sub = str(request.args.get('input'))
-        print(sub)
 
         res = [match for match in SKILL_SET if match.lower().startswith(sub.lower())]
-        print(res)
-        print(SKILL_SET)
 
         return Response(json.dumps(res), status=200)
     except KeyError:
@@ -194,7 +193,4 @@ def drop_all_files():
 
 if __name__ == '__main__':
     drop_all_files()
-    # todo remove
-    SKILL_SET = open('dataset/soft_skills.txt', 'r').read().split('\n') + open('dataset/hard_skills.txt',
-                                                                               'r').read().split('\n')
     app.run(debug=False, host='0.0.0.0', port=5000)
