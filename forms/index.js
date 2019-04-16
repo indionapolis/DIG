@@ -1,7 +1,91 @@
 /**
+ * Get data about user's existing forms and create block for each one with data included.
+ * @param {String} email String with email address.
+ */
+function loadBlocks(email) {
+    const promise = makeRequest("http://10.90.138.218:5000/projects?email=" + email, {}, "GET", "cors");
+    promise.then(function(data) {
+        const projects = data.projects,
+              preload = document.getElementById('preload');
+              
+        projects.forEach(item => {
+            var block = addEmptyBlock(hidden=true);
+            fillEmptyBlock(block, item.title, item.form_id);
+        });
+        preload.style.display = "none";
+    });
+}
+
+/**
+ * Get data from TypeForm server and make a block based on it.
+ * @param {*} block Block to be filled in.
+ * @param {String} title Block's title.
+ * @param {String} formId Block's form id.
+ */
+function fillEmptyBlock(block, title, formId) {
+    var projectNameInput = block.getElementsByTagName('input')[0];
+    const blockToolsTmpl = document.getElementById('block-tools-tmpl'),
+          blockTools = getElementFromTemplate(blockToolsTmpl),
+          blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
+
+    projectNameInput.value = title;
+    block.dataset.formId = formId;
+    projectNameInput.disabled = true;
+    block.classList.remove('empty');
+    block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
+
+    addBlockEditPanel(blockEditPanel);
+
+    /**
+     * Get all necessary fields from TypeForm server and add them to the block edit panel.
+     * @param {*} panel block edit panel to be fulfilled.
+     */
+    function addBlockEditPanel(panel) {
+        const addTextBtn = panel.getElementsByClassName("add-text-qn")[0],
+              addChkBoxBtn = panel.getElementsByClassName("add-chk-box")[0],
+              addRadioBtn = panel.getElementsByClassName("add-rad-btn")[0],
+              url = "https://api.typeform.com/forms/" + formId,
+              promise = makeRequest(url, {}, "GET", "cors");
+
+        promise.then(function(data) {            
+            data.fields.forEach(field => {
+                if (field.type == "long_text") {
+                    var textField = addFormField(addTextBtn, "text");
+                    textField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                }
+                else if (field.type == "multiple_choice" & field.properties.allow_multiple_selection) {
+                    var checkBoxField = addFormField(addChkBoxBtn, "check"),
+                        addListElBtn = checkBoxField.getElementsByClassName('add-list-element')[0];
+
+                    checkBoxField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                    checkBoxField.getElementsByClassName("list-item")[0].remove();
+
+                    field.properties.choices.forEach(choice => {
+                        var listEl = addListElement(addListElBtn, "checkbox");                        
+                        listEl.children[1].value = choice.label;
+                    });
+                }
+                else if (field.type == "multiple_choice" & !field.properties.allow_multiple_selection) {                    
+                    var radioBtnField = addFormField(addRadioBtn, "radio"),
+                        addListElBtn = radioBtnField.getElementsByClassName('add-list-element')[0];
+
+                    radioBtnField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                    radioBtnField.getElementsByClassName("list-item")[0].remove();
+
+                    field.properties.choices.forEach(choice => {
+                        var listEl = addListElement(addListElBtn, "radio");
+                        listEl.children[1].value = choice.label;
+                    });
+                }
+            });
+        });
+    }
+}
+
+/**
  * Add new block with input field for project name and 'save' and 'delete' buttons.
  */
-function addBlock() {
+function addEmptyBlock(hidden=false) {
     if (document.getElementsByClassName('empty').length > 0) {  // handle too much empty projects problem
         alert("You already have an empty project! Create it first before making a new one.");
         return;
@@ -12,6 +96,11 @@ function addBlock() {
           block = getElementFromTemplate(blockTmpl);
 
     blocksWrapper.appendChild(block);
+
+    if (!hidden) {
+        const blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
+        blockEditPanel.classList.remove('hidden');
+    }
     
     var projectNameInput = block.getElementsByTagName('input')[0];
     projectNameInput.focus();    // focus on newly added block's input field
@@ -20,6 +109,8 @@ function addBlock() {
         if (e.keyCode == 13)
             saveBlock(block.getElementsByClassName('save')[0]);
     }
+
+    return block;
 }
 
 /**
@@ -27,18 +118,14 @@ function addBlock() {
  * @param {*} saveBtn button which activated current function.
  */
 function saveBlock(saveBtn) {
-    block = getGrandParent(saveBtn);
-    var projectNameInput = block.getElementsByTagName('input')[0];
-    var title = projectNameInput.value;
+    var block = getGrandParent(saveBtn),
+        projectNameInput = block.getElementsByTagName('input')[0],
+        title = projectNameInput.value;
     
-    if (title.replace(/\s/g, '') == "") {   // handle empty project name problem
-        alert("Your project name is empty! Fill in something.");
-        projectNameInput.value = "";
+    if (!blockIsOK())
         return;
-    }
     
-    projectNameInput.remove();
-    block.firstElementChild.textContent += title;
+    projectNameInput.disabled = true;
 
     block.classList.remove('empty');
 
@@ -51,16 +138,82 @@ function saveBlock(saveBtn) {
     preload.style.display = "block";
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
-        const toolsHtml = '<button class="share" title="Get the link on form" onclick="copyToClipboard(\'https://ireknazmiev.typeform.com/to/' + data.id + '\');"></button>'
-                        + '<button class="edit" title="Edit form"></button>'
-                        + '<button class="download" onclick="downloadDataset(this);" title="Download dataset"></button>'
-                        + '<button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>';
-        saveBtn.parentElement.innerHTML = toolsHtml.trim();
 
-        const editPanel = block.getElementsByClassName('block-edit-panel')[0];
-        hideEditPanel(editPanel);
+        makeRequest("http://10.90.138.218:5000/projects", {
+            "form_id": data.id, 
+            "title": title, 
+            "email": getEmailFromCookies(),
+        }, "POST", "no-cors");
+
+        const blockToolsTmpl = document.getElementById('block-tools-tmpl'),
+              blockTools = getElementFromTemplate(blockToolsTmpl);
+        
+        hide(saveBtn, 'block-edit-panel');
+        block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
         preload.style.display = "none";
     });
+
+    function blockIsOK() {
+        if (titleIsEmpty()) {
+            alert("Your project name is empty! Fill in something.");
+            projectNameInput.value = "";
+            return false;
+        }
+        else if (thereAreNoFields()) {
+            alert("There are no fields in the form! Add at least one.");
+            return false;
+        }
+        else if (thereAreEmptyFields()) {
+            alert("There are empty fields in the form! Remove them or fill in.");
+            return false;
+        }
+        else if (thereAreEmptyChecklists()) {
+            alert("There are checklists without any choice! Add at least one choice.");
+            return false;
+        }
+
+        return true;
+
+        function titleIsEmpty() {
+            return title.replace(/\s/g, '') == "";
+        }
+
+        function thereAreNoFields() {
+            return block.getElementsByClassName('block-edit-panel')[0].children.length == 1;
+        }
+
+        function thereAreEmptyFields() {
+            const fieldTitles = block.getElementsByClassName('question');
+
+            for (let title of fieldTitles) {
+                if (title.firstElementChild.value.replace(/\s/g, '') == "") {
+                    title.firstElementChild.value = "";
+                    return true;
+                }
+            }
+
+            const listElTitles = block.getElementsByClassName('list-item');
+            
+            for (let elTitle of listElTitles) {
+                if (elTitle.children[1].value.replace(/\s/g, '') == "") {
+                    elTitle.children[1].value = "";
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function thereAreEmptyChecklists() {
+            const answerLists = block.getElementsByClassName('answer-list');
+
+            for (let list of answerLists)
+                if (list.children.length == 1)
+                    return true;
+            
+            return false;
+        }
+    }
 }
 
 /**
@@ -68,14 +221,21 @@ function saveBlock(saveBtn) {
  * @param {*} deleteBtn button which activated current function.
  */
 function deleteBlock(deleteBtn) {
-    block = getGrandParent(deleteBtn);
+    var block = getGrandParent(deleteBtn),
+        preload = document.getElementById('preload');
 
     if (!block.classList.contains('empty')) {
         const formId = block.dataset.formId,
               url = 'https://api.typeform.com/forms/' + formId;
 
-        const promise = makeRequest(url, {}, 'DELETE');
-        promise.then(block.remove());
+        preload.style.display = "block";
+
+        const promise = makeRequest(url, {}, 'DELETE', "cors");
+
+        promise.then(function(data) {            
+            block.remove();
+            preload.style.display = "none";
+        });
     } else
         block.remove();
 }
@@ -86,7 +246,7 @@ function deleteBlock(deleteBtn) {
  * @param {*} body Data to be transfered.
  * @param {*} method Method of a request (GET, POST, ...).
  */
-async function makeRequest(url, body={}, method) {
+async function makeRequest(url, body={}, method, mode) {
     const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF",
           data = {
               "method" : method,
@@ -94,14 +254,17 @@ async function makeRequest(url, body={}, method) {
                   "Content-Type": "application/json",
                   "Authorization": "Bearer " + token
               },
+              "mode" : mode
           };
 
     if (Object.keys(body).length > 0)
         data.body = JSON.stringify(body);
 
-    const response = await fetch(url, data);
-    
-    return await response.json();
+    var response = await fetch(url, data);
+
+    return await response.text().then(function(text) {
+        return text ? JSON.parse(text) : {}
+    })
 }
 
 /**
@@ -116,7 +279,43 @@ function createForm(title, fields=[]) {
         "fields" : fields
     };
 
-    return makeRequest(url, data, "POST");
+    return makeRequest(url, data, "POST", "cors");
+}
+
+/**
+ * Update form data with given new information.
+ * @param {*} btn button which activated current function.
+ */
+function updateForm(btn) {
+    const block = getGrandParent(btn),
+          blockTitle = block.getElementsByClassName('block-title')[0].firstElementChild;
+
+    if (btn.classList.contains('edit')) {
+        btn.classList.replace('edit', 'save');
+        btn.title = "Save changes";
+        hide(btn, 'block-edit-panel');
+        blockTitle.disabled = false;
+    }
+    else if (btn.classList.contains('save')) {
+        const preload = document.getElementById('preload'),
+              form = block.getElementsByTagName('form')[0],
+              formId = block.dataset.formId,
+              url = "https://api.typeform.com/forms/" + formId,
+              data = {
+                  "title" : blockTitle.value,
+                  "fields" : getFormFields(form)
+              };
+        
+        preload.style.display = "block";
+
+        makeRequest(url, data, "PUT", "cors").then(function(data) {
+            btn.classList.replace('save', 'edit');
+            btn.title = "Edit form";
+            preload.style.display = "none";
+            blockTitle.disabled = true;
+            hide(btn, 'block-edit-panel');
+        })
+    }
 }
 
 /**
@@ -127,7 +326,7 @@ function getFormFields(form) {
     var fields = [],
         fieldBLocks = form.getElementsByClassName('form-field');
 
-    for (let field of fieldBLocks) {
+    for (let field of fieldBLocks) {        
         if (field.classList.contains("text")) {
             const question = field.getElementsByClassName('question')[0].firstElementChild.value;
 
@@ -199,8 +398,10 @@ function getElementFromTemplate(template) {
  * Save link to the clipboard.
  * @param {*} link Link to be saved.
  */
-function copyToClipboard(link) {
-    const el = document.createElement('textarea');
+function copyToClipboard(btn) {
+    const formId = getGrandParent(btn).dataset.formId,
+          el = document.createElement('textarea');
+    var link = 'https://ireknazmiev.typeform.com/to/' + formId
     el.value = link;
     el.style.position = 'absolute';
     el.style.left = '-9000px';
@@ -220,7 +421,7 @@ function downloadDataset(btn) {
           formId = block.dataset.formId,
           url = "https://api.typeform.com/forms/"+ formId +"/responses";
     
-    var promise = makeRequest(url, {}, "GET");  // get json
+    var promise = makeRequest(url, {}, "GET", "cors");  // get json
     promise.then(function(data) {
         downloadJson(data, "dataset");
     });
@@ -242,30 +443,20 @@ function downloadJson(exportObj, exportName){
 }
 
 /**
- * Hide and show the element with given ID
+ * Hide and show the element with given class.
  * @param {*} btn button which activated current function.
- * @param {*} blockId id of element to be hidden/shown
+ * @param {*} blockClass class of element to be hidden/shown.
  */
-function hide(btn, blockId) {
-    block = document.getElementById(blockId);
-    if (block.classList.length == 0) {
+function hide(btn, blockClass) {
+    block = getGrandParent(btn).getElementsByClassName(blockClass)[0];
+    if (!block.classList.contains('hidden')) {
         block.classList.add("hidden");
-        btn.style.transform = "rotate(0deg)";
+        btn.classList.add("activated");
     }
     else {
         block.classList.remove("hidden");
-        btn.style.transform = "rotate(45deg)";
+        btn.classList.remove("activated");
     }
-}
-
-/**
- * Hide edit panel smoothly.
- * @param {*} editPanel panel element to be hidden smoothly.
- */
-function hideEditPanel(editPanel) {
-    editPanel.style.overflow = "hidden";
-    editPanel.style.padding = "0";
-    editPanel.style.maxHeight = "0";
 }
 
 /**
@@ -279,11 +470,11 @@ function addFormField(btn, type) {
           chkBoxBtnTmpl = document.getElementById('form-chk-box-field-tmpl');
 
     if (type == "text")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(textFieldTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(textFieldTmpl), getGrandParent(btn));
     else if (type == "radio")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(radioBtnTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(radioBtnTmpl), getGrandParent(btn));
     else if (type == "check")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
 }
 
 /**
@@ -299,7 +490,7 @@ function addListElement(btn, type) {
     else if (type == "checkbox")
         elementTmpl = document.getElementById('checkbox-tmpl');
 
-    getGrandParent(btn).insertBefore(getElementFromTemplate(elementTmpl), btn.parentElement)
+    return getGrandParent(btn).insertBefore(getElementFromTemplate(elementTmpl), btn.parentElement)
 }
 
 /**
