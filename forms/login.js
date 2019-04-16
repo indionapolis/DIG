@@ -6,7 +6,9 @@ window.onload = function() {
     var body = document.getElementsByTagName('body')[0],
         preload = document.getElementById('preload');
 
-    if (document.cookie == "") {
+    if (!getEmailFromCookies()) {
+        var pageTitle = document.getElementsByTagName('header')[0].getElementsByClassName('title')[0];
+        pageTitle.textContent = "Login to the system";
         const promise = loadFile("login.html");
 
         promise.then((html) => {            
@@ -22,9 +24,22 @@ window.onload = function() {
             const content = createElementFromHtml(html);
             for (let item of content.childNodes)
                 body.appendChild(item);
-            preload.style.display = "none";
+            loadBlocks(getEmailFromCookies());
         });
     }
+}
+
+/**
+ * Check cookies on email and return it. If doesn't exist, return false.
+ */
+function getEmailFromCookies() {
+    const cookies = document.cookie.split(';');
+
+    for (let i in cookies)
+        if (cookies[i].includes("email="))
+            return cookies[i].substring(6);
+
+    return false;
 }
 
 /**

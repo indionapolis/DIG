@@ -1,7 +1,91 @@
 /**
+ * Get data about user's existing forms and create block for each one with data included.
+ * @param {String} email String with email address.
+ */
+function loadBlocks(email) {
+    const promise = makeRequest("http://10.90.138.218:5000/projects?email=" + email, {}, "GET", "cors");
+    promise.then(function(data) {
+        const projects = data.projects,
+              preload = document.getElementById('preload');
+              
+        projects.forEach(item => {
+            var block = addEmptyBlock(hidden=true);
+            fillEmptyBlock(block, item.title, item.form_id);
+        });
+        preload.style.display = "none";
+    });
+}
+
+/**
+ * Get data from TypeForm server and make a block based on it.
+ * @param {*} block Block to be filled in.
+ * @param {String} title Block's title.
+ * @param {String} formId Block's form id.
+ */
+function fillEmptyBlock(block, title, formId) {
+    var projectNameInput = block.getElementsByTagName('input')[0];
+    const blockToolsTmpl = document.getElementById('block-tools-tmpl'),
+          blockTools = getElementFromTemplate(blockToolsTmpl),
+          blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
+
+    projectNameInput.value = title;
+    block.dataset.formId = formId;
+    projectNameInput.disabled = true;
+    block.classList.remove('empty');
+    block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
+
+    addBlockEditPanel(blockEditPanel);
+
+    /**
+     * Get all necessary fields from TypeForm server and add them to the block edit panel.
+     * @param {*} panel block edit panel to be fulfilled.
+     */
+    function addBlockEditPanel(panel) {
+        const addTextBtn = panel.getElementsByClassName("add-text-qn")[0],
+              addChkBoxBtn = panel.getElementsByClassName("add-chk-box")[0],
+              addRadioBtn = panel.getElementsByClassName("add-rad-btn")[0],
+              url = "https://api.typeform.com/forms/" + formId,
+              promise = makeRequest(url, {}, "GET", "cors");
+
+        promise.then(function(data) {            
+            data.fields.forEach(field => {
+                if (field.type == "long_text") {
+                    var textField = addFormField(addTextBtn, "text");
+                    textField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                }
+                else if (field.type == "multiple_choice" & field.properties.allow_multiple_selection) {
+                    var checkBoxField = addFormField(addChkBoxBtn, "check"),
+                        addListElBtn = checkBoxField.getElementsByClassName('add-list-element')[0];
+
+                    checkBoxField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                    checkBoxField.getElementsByClassName("list-item")[0].remove();
+
+                    field.properties.choices.forEach(choice => {
+                        var listEl = addListElement(addListElBtn, "checkbox");                        
+                        listEl.children[1].value = choice.label;
+                    });
+                }
+                else if (field.type == "multiple_choice" & !field.properties.allow_multiple_selection) {                    
+                    var radioBtnField = addFormField(addRadioBtn, "radio"),
+                        addListElBtn = radioBtnField.getElementsByClassName('add-list-element')[0];
+
+                    radioBtnField.getElementsByClassName('question')[0].firstElementChild.value = field.title;
+                    radioBtnField.getElementsByClassName("list-item")[0].remove();
+
+                    field.properties.choices.forEach(choice => {
+                        var listEl = addListElement(addListElBtn, "radio");
+                        listEl.children[1].value = choice.label;
+                    });
+                }
+            });
+        });
+    }
+}
+
+/**
  * Add new block with input field for project name and 'save' and 'delete' buttons.
  */
-function addBlock() {
+function addEmptyBlock(hidden=false) {
     if (document.getElementsByClassName('empty').length > 0) {  // handle too much empty projects problem
         alert("You already have an empty project! Create it first before making a new one.");
         return;
@@ -12,6 +96,11 @@ function addBlock() {
           block = getElementFromTemplate(blockTmpl);
 
     blocksWrapper.appendChild(block);
+
+    if (!hidden) {
+        const blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
+        blockEditPanel.classList.remove('hidden');
+    }
     
     var projectNameInput = block.getElementsByTagName('input')[0];
     projectNameInput.focus();    // focus on newly added block's input field
@@ -20,6 +109,8 @@ function addBlock() {
         if (e.keyCode == 13)
             saveBlock(block.getElementsByClassName('save')[0]);
     }
+
+    return block;
 }
 
 /**
@@ -50,6 +141,12 @@ function saveBlock(saveBtn) {
     preload.style.display = "block";
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
+
+        makeRequest("http://10.90.138.218:5000/projects", {
+            "form_id": data.id, 
+            "title": title, 
+            "email": getEmailFromCookies(),
+        }, "POST", "no-cors");
 
         const blockToolsTmpl = document.getElementById('block-tools-tmpl'),
               blockTools = getElementFromTemplate(blockToolsTmpl);
@@ -314,11 +411,11 @@ function addFormField(btn, type) {
           chkBoxBtnTmpl = document.getElementById('form-chk-box-field-tmpl');
 
     if (type == "text")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(textFieldTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(textFieldTmpl), getGrandParent(btn));
     else if (type == "radio")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(radioBtnTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(radioBtnTmpl), getGrandParent(btn));
     else if (type == "check")
-        getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
+        return getGrandParent(btn).parentElement.insertBefore(getElementFromTemplate(chkBoxBtnTmpl), getGrandParent(btn));
 }
 
 /**
@@ -334,7 +431,7 @@ function addListElement(btn, type) {
     else if (type == "checkbox")
         elementTmpl = document.getElementById('checkbox-tmpl');
 
-    getGrandParent(btn).insertBefore(getElementFromTemplate(elementTmpl), btn.parentElement)
+    return getGrandParent(btn).insertBefore(getElementFromTemplate(elementTmpl), btn.parentElement)
 }
 
 /**
