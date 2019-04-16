@@ -136,7 +136,7 @@ def projects():
     if request.method == 'GET':
         data = request.args if request.args else {}
         try:
-            email = data.get('email')
+            email = data.get('email').strip('=')
         except KeyError:
             return Response(status=400)
 
