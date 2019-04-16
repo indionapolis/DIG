@@ -93,7 +93,7 @@ class Results extends Component {
                     Участники:
                     <div style={{fontWeight: '300', marginLeft: '25px'}}>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].members
-                        .map((d, xyz) => (<div key={`lol+kek${d}+-${xyz}`}>{d["Full Name"].toString()}</div>))}
+                        .map((d, xyz) => (<div key={`lol+kek${d}+-${xyz}`}>{d["What's your name?"].toString()}</div>))}
                     </div>
                   </div>
                 </div>
