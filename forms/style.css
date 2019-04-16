@@ -115,11 +115,24 @@ header {
     border-bottom: 5px solid var(--inno-green);
 }
 
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 header .title {
-    width: 100%;
     color: var(--inno-green);
     font-weight: 600;
     font-size: 40px;
+    flex-shrink: 0;
+}
+
+#build-teams-link {
+    color: var(--inno-purple);
+    font-weight: 600;
+    font-size: 22px;
+    text-align: right;
 }
 
 /* SECTION */
@@ -137,7 +150,7 @@ section .container {
 }
 
 section #add-block {
-    min-width: 270px;
+    min-width: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -159,7 +172,7 @@ section #add-block:hover > div {
 }
 
 section .block {
-    min-width: 280px;
+    min-width: 270px;
     background-color: white;
     flex-basis: 48%;
     margin-bottom: 30px;
