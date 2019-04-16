@@ -122,11 +122,8 @@ function saveBlock(saveBtn) {
         projectNameInput = block.getElementsByTagName('input')[0],
         title = projectNameInput.value;
     
-    if (title.replace(/\s/g, '') == "") {   // handle empty project name problem
-        alert("Your project name is empty! Fill in something.");
-        projectNameInput.value = "";
+    if (!blockIsOK())
         return;
-    }
     
     projectNameInput.disabled = true;
 
@@ -155,6 +152,68 @@ function saveBlock(saveBtn) {
         block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
         preload.style.display = "none";
     });
+
+    function blockIsOK() {
+        if (titleIsEmpty()) {
+            alert("Your project name is empty! Fill in something.");
+            projectNameInput.value = "";
+            return false;
+        }
+        else if (thereAreNoFields()) {
+            alert("There are no fields in the form! Add at least one.");
+            return false;
+        }
+        else if (thereAreEmptyFields()) {
+            alert("There are empty fields in the form! Remove them or fill in.");
+            return false;
+        }
+        else if (thereAreEmptyChecklists()) {
+            alert("There are checklists without any choice! Add at least one choice.");
+            return false;
+        }
+
+        return true;
+
+        function titleIsEmpty() {
+            return title.replace(/\s/g, '') == "";
+        }
+
+        function thereAreNoFields() {
+            return block.getElementsByClassName('block-edit-panel')[0].children.length == 1;
+        }
+
+        function thereAreEmptyFields() {
+            const fieldTitles = block.getElementsByClassName('question');
+
+            for (let title of fieldTitles) {
+                if (title.firstElementChild.value.replace(/\s/g, '') == "") {
+                    title.firstElementChild.value = "";
+                    return true;
+                }
+            }
+
+            const listElTitles = block.getElementsByClassName('list-item');
+            
+            for (let elTitle of listElTitles) {
+                if (elTitle.children[1].value.replace(/\s/g, '') == "") {
+                    elTitle.children[1].value = "";
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function thereAreEmptyChecklists() {
+            const answerLists = block.getElementsByClassName('answer-list');
+
+            for (let list of answerLists)
+                if (list.children.length == 1)
+                    return true;
+            
+            return false;
+        }
+    }
 }
 
 /**
@@ -267,7 +326,7 @@ function getFormFields(form) {
     var fields = [],
         fieldBLocks = form.getElementsByClassName('form-field');
 
-    for (let field of fieldBLocks) {
+    for (let field of fieldBLocks) {        
         if (field.classList.contains("text")) {
             const question = field.getElementsByClassName('question')[0].firstElementChild.value;
 
