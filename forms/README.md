@@ -39,6 +39,7 @@ DIG/Forms
 │   style.css
 │   index.js
 │   login.js
+|   README.md
 │   default.conf
 │   Dockerfile
 │
