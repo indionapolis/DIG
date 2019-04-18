@@ -4,7 +4,7 @@ COPY package.json ./
 
 RUN npm install
 COPY . ./
-ARG backend_endpoint=http://localhost:5555
+ARG backend_endpoint=http://localhost:5000
 ENV REACT_APP_BACKEND_URL=$backend_endpoint
 RUN npm run build
 

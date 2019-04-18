@@ -3,3 +3,5 @@ flask-cors
 pandas
 xlrd
 openpyxl
+redis
+requests
