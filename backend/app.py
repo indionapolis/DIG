@@ -145,7 +145,8 @@ def projects():
         for item in proj_list:
             result['projects'].append({
                 'title': json.loads(item)[1],
-                'form_id': json.loads(item)[0]
+                'form_id': json.loads(item)[0],
+                'number_of_item': app.outsource.get_number_of_records(json.loads(item)[0])
             })
 
         return Response(json.dumps(result), status=200)

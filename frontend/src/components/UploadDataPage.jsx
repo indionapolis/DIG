@@ -57,7 +57,7 @@ class UploadDataPage extends Component {
     return (
       <div className="data_upload">
         <div className="select_data">
-          {this.state.projects.map((d) => <div className="project_item" onClick={() => this.onProjectSelect(d)}>{d.title}</div>)}
+          {this.state.projects.map((d) => <div className="project_item" onClick={() => this.onProjectSelect(d)}>{d.title} ({d.number_of_item})</div>)}
         </div>
         <input id="inputData" type="file" onChange={this.onFileUpload} />
       </div>
