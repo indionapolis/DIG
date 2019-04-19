@@ -14,5 +14,5 @@ COPY --from=build /home/build /home/build
 
 COPY default.conf /etc/nginx/conf.d
 
-EXPOSE 80
+EXPOSE 81
 CMD ["nginx", "-g", "daemon off;"]

@@ -2,11 +2,11 @@ version: '3'
 services:
   backend:
     depends_on:
-      - redis
+    - redis
     build: ./backend/
     container_name: dig_backend
     ports:
-     - "5000:5000"
+    - "5000:5000"
   frontend:
     container_name: dig_frontend
     depends_on:
@@ -14,11 +14,26 @@ services:
     build:
       context: ./frontend/
       args:
-        - backend_endpoint=http://localhost:5000
+      - backend_endpoint=http://localhost:5000
     ports:
-     - "80:80"
+    - "81:81"
+  forms:
+    container_name: dig_forms
+    depends_on:
+    - backend
+    build:
+      context: ./forms/
+    ports:
+    - "82:82"
   redis:
     container_name: dig_db
     image: "redis:latest"
     volumes:
-      - $HOME/data:/data
+    - $HOME/data:/data
+  dispatcher:
+    build:
+      context: ./dispatcher/
+    ports:
+    - "80:80"
+    depends_on:
+    - frontend

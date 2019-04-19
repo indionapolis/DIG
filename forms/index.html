@@ -12,25 +12,19 @@
         <link rel="icon" href="img/flower.png">
         <link rel="stylesheet" href="style.css">
 
+        <script src="login.js" type="text/javascript"></script>
         <script src="index.js" type="text/javascript"></script>
     </head>
 
     <body>
+        <div id="preload" class="full-screen"></div>
+
         <header>
             <div class="container">
                 <div class="title">Create form</div>
+                <a href="../dig/" id="build-teams-link" target="_blank">Build teams</a>
             </div>
         </header>
-
-        <section>
-            <div id="preload"></div>
-
-            <div class="container">
-                <div id="add-block" class="block" onclick="addBlock();">
-                    <div>+</div>
-                </div>
-            </div>
-        </section>
 
         <footer>
             <div class="container">
@@ -39,86 +33,5 @@
                 Group Breakdown © 2019
             </div>
         </footer>
-
-        <template id="empty-block-tmpl">
-            <div class="block empty">
-                <div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>
-                
-                <form class="block-edit-panel">
-                    <div id="add-form-field-panel">
-                        <button id="add-form-field" onclick="hide(this, 'add-form-field-cont');" title="Add form field"  form="">+</button>
-                        <div id="add-form-field-cont" class="hidden">
-                            <button id="add-text-qn" onclick="addFormField(this, 'text');" title="Add text question" form=""></button>
-                            <button id="add-rad-btn" onclick="addFormField(this, 'radio');" title="Add radio button question" form=""></button>
-                            <button id="add-chk-box" onclick="addFormField(this, 'check');" title="Add checkbox question" form=""></button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="block-tools">
-                    <button class="save" title="Create a form" onclick="saveBlock(this);"></button>
-                    <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
-                </div>
-            </div>
-        </template>
-
-        <template id="form-text-field-tmpl">
-            <div class="form-field text">
-                <div class="question">
-                    <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
-                </div>
-            </div>
-        </template>
-
-        <template id="form-radio-field-tmpl">
-            <div class="form-field radio">
-                <div class="question">
-                    <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
-                </div>
-
-                <ul class="answer-list">
-                    <li class="list-item">
-                        <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
-                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element" form="">-</button>
-                    </li>
-
-                    <li><button class="add-list-element" onclick="addListElement(this, 'radio');" title="Add list element" form="">+</button></li>
-                </ul>
-            </div>
-        </template>
-
-        <template id="form-chk-box-field-tmpl">
-            <div class="form-field check-box">
-                <div class="question">
-                    <input type="text" placeholder="Question">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
-                </div>
-
-                <ul class="answer-list">
-                    <li class="list-item">
-                        <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
-                        <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
-                    </li>
-
-                    <li><button class="add-list-element" onclick="addListElement(this, 'checkbox');" title="Add list element"  form="">+</button></li>
-                </ul>
-            </div>
-        </template>
-
-        <template id="radio-tmpl">
-            <li class="list-item">
-                <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
-                <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
-            </li>
-        </template>
-
-        <template id="checkbox-tmpl">
-            <li class="list-item">
-                <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
-                <button class="remove-form-element" onclick="removeFormElement(this, 'checkbox');" title="Remove list element"  form="">-</button>
-            </li>
-        </template>
     </body>
 </html>

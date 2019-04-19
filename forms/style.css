@@ -33,8 +33,78 @@ button:hover {
     padding: 0 30px;
 }
 
-.hidden {
-    width: 0 !important;
+.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    transition: unset;
+}
+
+#preload {
+    background-color: rgba(1,1,1,0.1);
+    background-image: url('img/preload.svg');
+    background-position: center;
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    z-index: 10;
+}
+
+/* LOGIN */
+
+#login {
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    background-color: rgba(1,1,1,0);
+    transition: background 0.2s ease;
+}
+
+#login:focus-within {
+    background-color: rgba(1, 1, 1, 0.05);
+}
+
+#login .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login input {
+    min-width: 100px;
+    width: 300px;
+    padding: 10px 15px;
+    font-size: 20px;
+    border: 3px solid var(--inno-purple);
+    border-radius: 50px;
+    background-color: white;
+    flex-shrink: 1;
+    margin-right: 10px;
+}
+
+#login input:focus {
+    padding: 15px 20px;
+    box-shadow: 0px 0px 55px -10px rgba(96, 38, 158, 0.4);
+    margin-right: 20px;
+}
+
+#login input:hover {
+    box-shadow: 0px 0px 55px -10px rgba(96, 38, 158, 0.4);
+}
+
+#login button {
+    width: 40px;
+    height: 40px;
+    color: white;
+    border-radius: 80%;
+    background-color: var(--inno-purple);
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+#login button:hover {
+    opacity: 1;
 }
 
 /* HEADER */
@@ -45,11 +115,24 @@ header {
     border-bottom: 5px solid var(--inno-green);
 }
 
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 header .title {
-    width: 100%;
     color: var(--inno-green);
     font-weight: 600;
     font-size: 40px;
+    flex-shrink: 0;
+}
+
+#build-teams-link {
+    color: var(--inno-purple);
+    font-weight: 600;
+    font-size: 22px;
+    text-align: right;
 }
 
 /* SECTION */
@@ -66,22 +149,8 @@ section .container {
     align-items: flex-start;
 }
 
-section #preload {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(1,1,1,0.1);
-    background-image: url('img/preload.svg');
-    background-position: center;
-    background-size: 100px 100px;
-    background-repeat: no-repeat;
-}
-
 section #add-block {
-    min-width: 270px;
+    min-width: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,7 +172,7 @@ section #add-block:hover > div {
 }
 
 section .block {
-    min-width: 280px;
+    min-width: 270px;
     background-color: white;
     flex-basis: 48%;
     margin-bottom: 30px;
@@ -138,6 +207,7 @@ section .block-title input {
     font-family: inherit;
     font-weight: inherit;
     text-align: center;
+    color: black;
 }
 
 section .block-title input::placeholder {
@@ -153,13 +223,24 @@ section .block-edit-panel {
     align-items: stretch;
 }
 
-section .block-edit-panel #add-form-field-panel {
+section .block-edit-panel.hidden {
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 0;
+}
+
+section .block-edit-panel .add-form-field-panel {
     padding: 10px 0;
     display: flex;
     justify-content: center;
 }
 
-section .block-edit-panel #add-form-field-panel button {
+section .block-edit-panel .add-form-field-cont.hidden {
+    width: 0 !important;
+}
+
+section .block-edit-panel .add-form-field-panel button {
     height: 30px;
     width: 30px;
     min-height: 30px;
@@ -173,36 +254,40 @@ section .block-edit-panel #add-form-field-panel button {
     opacity: 0.6;
 }
 
-section .block-edit-panel #add-form-field {
+section .block-edit-panel .add-form-field {
     background-color: rgb(170, 170, 170);
+    transform: rotate(45deg);
+}
+
+section .block-edit-panel .add-form-field.activated{
     transform: rotate(0deg);
 }
 
-section .block-edit-panel #add-form-field-cont {
+section .block-edit-panel .add-form-field-cont {
     display: inline-flex;
     overflow: hidden;
     width: 110px;
     flex-direction: row-reverse;
 }
 
-section .block-edit-panel #add-form-field-cont button{
+section .block-edit-panel .add-form-field-cont button{
     background-color: #60269e80;
     margin-left: 5px;
 }
 
-section .block-edit-panel #add-form-field-panel button:hover {
+section .block-edit-panel .add-form-field-panel button:hover {
     opacity: 1;
 }
 
-section .block-edit-panel #add-text-qn {
+section .block-edit-panel .add-text-qn {
     background-image: url("img/text-field.svg");
 }
 
-section .block-edit-panel #add-rad-btn {
+section .block-edit-panel .add-rad-btn {
     background-image: url("img/radio-button.svg");
 }
 
-section .block-edit-panel #add-chk-box {
+section .block-edit-panel .add-chk-box {
     background-image: url("img/check-box.svg");
 }
 
