@@ -1,9 +1,11 @@
+const API_ENDPOINT = 'http://localhost';
+const PORT = 5000;
 /**
  * Get data about user's existing forms and create block for each one with data included.
  * @param {String} email String with email address.
  */
 function loadBlocks(email) {
-    const promise = makeRequest("http://10.90.138.218:5000/projects?email=" + email, {}, "GET", "cors");
+    const promise = makeRequest(`${API_ENDPOINT}:${PORT}/projects?email=` + email, {}, "GET", "cors");
     promise.then(function(data) {
         const projects = data.projects,
               preload = document.getElementById('preload');
@@ -139,7 +141,7 @@ function saveBlock(saveBtn) {
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
 
-        makeRequest("http://10.90.138.218:5000/projects", {
+        makeRequest(`${API_ENDPOINT}:${PORT}/projects`, {
             "form_id": data.id, 
             "title": title, 
             "email": getEmailFromCookies(),
@@ -418,13 +420,13 @@ function copyToClipboard(btn) {
  */
 function downloadDataset(btn) {
     const block = getGrandParent(btn),
-          formId = block.dataset.formId,
-          url = "https://api.typeform.com/forms/"+ formId +"/responses";
+          formId = block.dataset.formId;
+    window.open(`${API_ENDPOINT}/dig/?form_id=${formId}`, "_blank");
     
-    var promise = makeRequest(url, {}, "GET", "cors");  // get json
-    promise.then(function(data) {
-        downloadJson(data, "dataset");
-    });
+    // var promise = makeRequest(url, {}, "GET", "cors");  // get json
+    // promise.then(function(data) {
+    //     downloadJson(data, "dataset");
+    // });
 }
 
 /**
@@ -432,14 +434,16 @@ function downloadDataset(btn) {
  * @param {*} exportObj JSON.
  * @param {*} exportName name JSON will have after being saved.
  */
-function downloadJson(exportObj, exportName){
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+function downloadJson(elem){
+    const block = getGrandParent(elem),
+          formId = block.dataset.formId;
+    // var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    // var downloadAnchorNode = document.createElement('a');
+    // downloadAnchorNode.setAttribute("href", dataStr);
+    // downloadAnchorNode.setAttribute("download", exportName + ".json");
+    // document.body.appendChild(downloadAnchorNode); // required for firefox
+    // downloadAnchorNode.click();
+    // downloadAnchorNode.remove();
 }
 
 /**
