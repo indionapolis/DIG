@@ -55,3 +55,14 @@ class TypeForm:
         df.to_excel(os.path.join(self.UPLOAD_FOLDER, filename), index=False)
 
         return filename
+
+    def get_number_of_records(self, form_id):
+        headers = {'Authorization': self.TYPE_FORM_TOKEN}
+        r = requests.get(f'https://api.typeform.com/forms/{form_id}/responses', headers=headers)
+
+        if r.status_code == 404:
+            return 0
+
+        number_of_records = r.json()['total_items']
+
+        return number_of_records

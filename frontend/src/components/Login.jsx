@@ -12,14 +12,16 @@ class Login extends Component {
         }
     }
 
+    randomChoice(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     render() {
+        const loaders = ["loader", 'lol_loader', 'cube', 'spinner'];
+
         return (
             <div className="login">
-                <input id="login_" type="text" placeholder="e.bobrov@innopolis.university"
-                       onKeyPress={(e) => {if (e.key === "Enter") this.onLogin()}} />
-                <button className="button_decorated"
-                        style={{alignSelf: 'center', marginTop: '0'}}
-                        onClick={this.onLogin.bind(this)}>Login</button>
+                <img src={`/${this.randomChoice(loaders)}.gif`} height={350} width={350} />
             </div>
         )
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import AppRoutes from "./AppRoutes";
+import queryString from 'query-string';
 
 class App extends Component {
   constructor(props) {
@@ -33,7 +34,24 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (this.getCookie("email")) {
+    let query = queryString.parse(window.location.search);
+    console.log(query);
+    if (query && query.form_id) {
+      this.setState({
+        currentState: '4'
+      });
+
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/upload_from_outsource`, {
+        method: 'POST',
+        body: JSON.stringify(query)
+      })
+        .then(d => {
+          d.json().then((data) => {
+            document.cookie = `uuid=${d.headers.get("uuid")}`;
+            this.onUpload(data, d.headers.get("uuid"));
+          })
+        });
+    } else if (this.getCookie("email")) {
       this.setState({currentState: "0"})
     }
   }

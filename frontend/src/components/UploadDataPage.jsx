@@ -40,7 +40,6 @@ class UploadDataPage extends Component {
   }
 
   onProjectSelect(data) {
-
     fetch(`${process.env.REACT_APP_BACKEND_URL}/upload_from_outsource`, {
       method: 'POST',
       body: JSON.stringify(data)
@@ -56,10 +55,7 @@ class UploadDataPage extends Component {
   render() {
     return (
       <div className="data_upload">
-        <div className="select_data">
-          {this.state.projects.map((d) => <div className="project_item" onClick={() => this.onProjectSelect(d)}>{d.title}</div>)}
-        </div>
-        <input id="inputData" type="file" onChange={this.onFileUpload} />
+        The DIG main page. Use it with /forms!
       </div>
     );
   }
