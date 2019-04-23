@@ -1,15 +1,19 @@
+const API_ENDPOINT = 'http://localhost';
+const PORT = 5000;
+
 /**
  * Get data about user's existing forms and create block for each one with data included.
- * @param {String} email String with email address.
+ * @param {String} email - String with email address.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function loadBlocks(email) {
-    const promise = makeRequest("http://10.90.138.218:5000/projects?email=" + email, {}, "GET", "cors");
+    const promise = makeRequest(`${API_ENDPOINT}:${PORT}/projects?email=` + email, {}, "GET", "cors");
     promise.then(function(data) {
         const projects = data.projects,
               preload = document.getElementById('preload');
               
         projects.forEach(item => {
-            var block = addEmptyBlock(hidden=true);
+            var block = addEmptyBlock();
             fillEmptyBlock(block, item.title, item.form_id);
         });
         preload.style.display = "none";
@@ -18,9 +22,10 @@ function loadBlocks(email) {
 
 /**
  * Get data from TypeForm server and make a block based on it.
- * @param {*} block Block to be filled in.
- * @param {String} title Block's title.
- * @param {String} formId Block's form id.
+ * @param {HTMLElement} block - Block to be filled in.
+ * @param {String} title - Block's title.
+ * @param {String} formId - Block's form id.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function fillEmptyBlock(block, title, formId) {
     var projectNameInput = block.getElementsByTagName('input')[0];
@@ -38,7 +43,8 @@ function fillEmptyBlock(block, title, formId) {
 
     /**
      * Get all necessary fields from TypeForm server and add them to the block edit panel.
-     * @param {*} panel block edit panel to be fulfilled.
+     * @param {HTMLElement} panel - Block edit panel to be fulfilled.
+     * @returns {void} Nothing, just modify the necessary block(s).
      */
     function addBlockEditPanel(panel) {
         const addTextBtn = panel.getElementsByClassName("add-text-qn")[0],
@@ -84,8 +90,9 @@ function fillEmptyBlock(block, title, formId) {
 
 /**
  * Add new block with input field for project name and 'save' and 'delete' buttons.
+ * @returns {HTMLElement} The added block.
  */
-function addEmptyBlock(hidden=false) {
+function addEmptyBlock() {
     if (document.getElementsByClassName('empty').length > 0) {  // handle too much empty projects problem
         alert("You already have an empty project! Create it first before making a new one.");
         return;
@@ -96,11 +103,6 @@ function addEmptyBlock(hidden=false) {
           block = getElementFromTemplate(blockTmpl);
 
     blocksWrapper.appendChild(block);
-
-    if (!hidden) {
-        const blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
-        blockEditPanel.classList.remove('hidden');
-    }
     
     var projectNameInput = block.getElementsByTagName('input')[0];
     projectNameInput.focus();    // focus on newly added block's input field
@@ -115,7 +117,8 @@ function addEmptyBlock(hidden=false) {
 
 /**
  * Complete block creation by saving it.
- * @param {*} saveBtn button which activated current function.
+ * @param {*} saveBtn - Button which activated current function.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function saveBlock(saveBtn) {
     var block = getGrandParent(saveBtn),
@@ -139,7 +142,7 @@ function saveBlock(saveBtn) {
     promise.then(function(data) {
         getGrandParent(saveBtn).dataset.formId = data.id;
 
-        makeRequest("http://10.90.138.218:5000/projects", {
+        makeRequest(`${API_ENDPOINT}:${PORT}/projects`, {
             "form_id": data.id, 
             "title": title, 
             "email": getEmailFromCookies(),
@@ -153,6 +156,9 @@ function saveBlock(saveBtn) {
         preload.style.display = "none";
     });
 
+    /**
+     * Check whether there are some conditions obstructing the correct block creation process.
+     */
     function blockIsOK() {
         if (titleIsEmpty()) {
             alert("Your project name is empty! Fill in something.");
@@ -218,7 +224,8 @@ function saveBlock(saveBtn) {
 
 /**
  * Delete the form from TypeForm site and approproate block found by given button.
- * @param {*} deleteBtn button which activated current function.
+ * @param {HTMLElement} deleteBtn - Button which activated current function.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function deleteBlock(deleteBtn) {
     var block = getGrandParent(deleteBtn),
@@ -242,9 +249,11 @@ function deleteBlock(deleteBtn) {
 
 /**
  * Make a request (GET, POST, ...) to the TypeForm's endpoint.
- * @param {*} url URL-address of the site to make a request on.
- * @param {*} body Data to be transfered.
- * @param {*} method Method of a request (GET, POST, ...).
+ * @param {String} url - URL-address of the site to make a request on.
+ * @param {Object} body - Data to be transfered.
+ * @param {String} method - Method of a request (GET, POST, ...).
+ * @param {String} mode - Mode of a request (no-cors, cors).
+ * @returns {Promise} Promise file with some data got from the request.
  */
 async function makeRequest(url, body={}, method, mode) {
     const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF",
@@ -269,8 +278,9 @@ async function makeRequest(url, body={}, method, mode) {
 
 /**
  * Create a form with given fields filled in on TypeForm site.
- * @param {*} title Title of the form.
- * @param {*} fields Fields to be inserted into the form.
+ * @param {String} title - Title of the form.
+ * @param {Array} fields - Fields to be inserted into the form.
+ * @returns {Promise} Promise file with some data got from the request.
  */
 function createForm(title, fields=[]) {
     const url = "https://api.typeform.com/forms";
@@ -285,6 +295,7 @@ function createForm(title, fields=[]) {
 /**
  * Update form data with given new information.
  * @param {*} btn button which activated current function.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function updateForm(btn) {
     const block = getGrandParent(btn),
@@ -320,7 +331,8 @@ function updateForm(btn) {
 
 /**
  * Get fields from given form and translate them to a specific format.
- * @param {*} form form to be translated.
+ * @param {HTMLElement} form - Form to be translated.
+ * @returns {Array} Array of JSONs containing the data from given form in a specific format.
  */
 function getFormFields(form) {
     var fields = [],
@@ -368,7 +380,8 @@ function getFormFields(form) {
 
     /**
      * Get unordered list elements translated to a specific format.
-     * @param {*} field field containing the list.
+     * @param {HTMLElement} field - The field containing the list.
+     * @returns {Array} Values of list elements in a JSON format.
      */
     function getChoices(field) {
         var choices = [];
@@ -388,7 +401,8 @@ function getFormFields(form) {
 
 /**
  * Transform given template block into the element.
- * @param {*} template template block.
+ * @param {HTMLElement} template - Template block.
+ * @returns {HTMLElement} Block inside the template.
  */
 function getElementFromTemplate(template) {
     return template.content.children.item(0).cloneNode(true);
@@ -396,7 +410,8 @@ function getElementFromTemplate(template) {
 
 /**
  * Save link to the clipboard.
- * @param {*} link Link to be saved.
+ * @param {String} link - Link to be saved.
+ * @returns {void} Nothing, just perform necessary actions.
  */
 function copyToClipboard(btn) {
     const formId = getGrandParent(btn).dataset.formId,
@@ -413,39 +428,22 @@ function copyToClipboard(btn) {
 };
 
 /**
- * Get JSON from TypeForm and download it from browser.
- * @param {*} btn button which activated current function.
+ * Redirect to the 'breakdown' page with necessary dataset already sent and prepared.
+ * @param {HTMLElement} btn - Button which activated current function.
+ * @returns {void} Nothing, just modify the necessary block(s).
  */
-function downloadDataset(btn) {
+function sendDataset(btn) {
     const block = getGrandParent(btn),
-          formId = block.dataset.formId,
-          url = "https://api.typeform.com/forms/"+ formId +"/responses";
-    
-    var promise = makeRequest(url, {}, "GET", "cors");  // get json
-    promise.then(function(data) {
-        downloadJson(data, "dataset");
-    });
-}
+          formId = block.dataset.formId;
 
-/**
- * Download given json file.
- * @param {*} exportObj JSON.
- * @param {*} exportName name JSON will have after being saved.
- */
-function downloadJson(exportObj, exportName){
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    window.open(`${API_ENDPOINT}/dig/?form_id=${formId}`, "_blank");
 }
 
 /**
  * Hide and show the element with given class.
- * @param {*} btn button which activated current function.
- * @param {*} blockClass class of element to be hidden/shown.
+ * @param {HTMLElement} btn - Button which activated current function.
+ * @param {String} blockClass - Class of element to be hidden/shown.
+ * @returns {void} Nothing, just modify the necessary block(s).
  */
 function hide(btn, blockClass) {
     block = getGrandParent(btn).getElementsByClassName(blockClass)[0];
@@ -460,9 +458,10 @@ function hide(btn, blockClass) {
 }
 
 /**
- * Add a new field with question of one of the given type to the form.
- * @param {*} btn button which activated current function.
- * @param {*} type the type of a field to be added.
+ * Add a new question field of a given type to the form.
+ * @param {HTMLElement} btn - Button which activated current function.
+ * @param {String} type - Type of a field to be added.
+ * @returns {HTMLElement} Inserted field.
  */
 function addFormField(btn, type) {
     const textFieldTmpl = document.getElementById('form-text-field-tmpl'),
@@ -478,9 +477,10 @@ function addFormField(btn, type) {
 }
 
 /**
- * Add list element of a chosen type near the activating button.
- * @param {*} btn button which activated current function.
- * @param {*} type type of a list element.
+ * Add list element of a chosen type right after the activating button.
+ * @param {HTMLElement} btn - Button which activated current function.
+ * @param {String} type - Type of a list element.
+ * @returns {HTMLElement} Inserted list element.
  */
 function addListElement(btn, type) {
     var elementTmpl = '';
@@ -494,9 +494,10 @@ function addListElement(btn, type) {
 }
 
 /**
- * Remove a form element of a chosen type;
- * @param {*} btn button which activated current function.
- * @param {*} type type of a form element.
+ * Remove a form element of a chosen type.
+ * @param {HTMLElement} btn - Button which activated current function.
+ * @param {String} type - Type of a form element.
+ * @returns {void} Nothing, just modify the necessary block.
  */
 function removeFormElement(btn, type) {
     if (type == "question")
@@ -505,7 +506,11 @@ function removeFormElement(btn, type) {
         btn.parentElement.remove();
 }
 
-// get block's grandparent
+/**
+ * Get block's grandparent.
+ * @param {HTMLElement} elem - Original block.
+ * @returns {HTMLElement} Block's grandparent.
+ */
 function getGrandParent(elem) {
     return elem.parentElement.parentElement;
 }
