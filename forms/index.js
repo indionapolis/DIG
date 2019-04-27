@@ -8,14 +8,21 @@ const PORT = 5000;
  */
 function loadBlocks(email) {
     const promise = makeRequest(`${API_ENDPOINT}:${PORT}/projects?email=` + email, {}, "GET", "cors");
+
     promise.then(function(data) {
         const projects = data.projects,
               preload = document.getElementById('preload');
               
         projects.forEach(item => {
-            var block = addEmptyBlock();
+            var block = addEmptyBlock(),
+                blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];;
+
+            blockEditPanel.classList.add('no-animations');
             fillEmptyBlock(block, item.title, item.form_id);
+            blockEditPanel.classList.add('hidden');
+            setTimeout(() => {blockEditPanel.classList.remove('no-animations');}, 1000);
         });
+
         preload.style.display = "none";
     });
 }
