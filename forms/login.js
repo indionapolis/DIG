@@ -15,6 +15,7 @@ window.onload = function() {
             const login = createElementFromHtml(html);
             body.appendChild(login.firstElementChild);
             preload.style.display = "none";
+            preload.style.backgroundColor = "rgba(1,1,1,0.1)";
         });
     }
     else {
@@ -68,5 +69,14 @@ async function loadFile(fileName) {
 function saveEmail(form) {
     const input = form.firstElementChild;
     document.cookie = "email=" + input.value;
+    location.reload();
+}
+
+
+/**
+ * Log out the user by discarding its cookies.
+ */
+function logOut() {
+    document.cookie = "email= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
     location.reload();
 }

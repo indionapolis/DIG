@@ -43,7 +43,7 @@ button:hover {
 }
 
 #preload {
-    background-color: rgba(1,1,1,0.1);
+    background-color: white;
     background-image: url('img/preload.svg');
     background-position: center;
     background-size: 100px 100px;
@@ -54,15 +54,10 @@ button:hover {
 /* LOGIN */
 
 #login {
-    z-index: -1;
     display: flex;
     align-items: center;
-    background-color: rgba(1,1,1,0);
+    background-color: #f8f8f8;
     transition: background 0.2s ease;
-}
-
-#login:focus-within {
-    background-color: rgba(1, 1, 1, 0.05);
 }
 
 #login .container {
@@ -98,13 +93,18 @@ button:hover {
     height: 40px;
     color: white;
     border-radius: 80%;
+
     background-color: var(--inno-purple);
+    background-image: url("img/arrow.svg");
+    background-size: 50%;
+
     flex-shrink: 0;
     opacity: 0.9;
 }
 
 #login button:hover {
     opacity: 1;
+    background-position-x: 12px;
 }
 
 /* HEADER */
@@ -126,6 +126,14 @@ header .title {
     font-weight: 600;
     font-size: 40px;
     flex-shrink: 0;
+}
+
+#logout {
+    font-family: inherit;
+    font-size: 18px;
+    color: var(--inno-purple);
+    text-decoration: underline;
+    font-weight: 400;
 }
 
 /* SECTION */
