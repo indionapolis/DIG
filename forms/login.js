@@ -26,6 +26,8 @@ window.onload = function() {
             for (let item of content.childNodes)
                 body.appendChild(item);
             loadBlocks(getEmailFromCookies());
+            
+            document.getElementById('add-block').focus();
         });
     }
 }

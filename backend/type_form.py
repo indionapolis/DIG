@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 class TypeForm:
     def __init__(self, UPLOAD_FOLDER):
-        self.TYPE_FORM_TOKEN = 'Bearer EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF'
+        self.TYPE_FORM_TOKEN = 'Bearer DtnUFUj7Ay9bN56vSzsvNnHHivaa2hZGWt2agNmRjspa'
         self.UPLOAD_FOLDER = UPLOAD_FOLDER
 
     @staticmethod

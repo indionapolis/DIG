@@ -221,6 +221,7 @@ section .block-title input::placeholder {
 
 section .block-edit-panel {
     overflow: auto;
+    overflow-x: hidden;
     max-height: 50vh;
     background-color: #f3f3f382;
     display: flex;
@@ -272,7 +273,7 @@ section .block-edit-panel .add-form-field-cont {
     display: inline-flex;
     overflow: hidden;
     width: 110px;
-    flex-direction: row-reverse;
+    justify-content: flex-end;
 }
 
 section .block-edit-panel .add-form-field-cont button{
@@ -280,7 +281,8 @@ section .block-edit-panel .add-form-field-cont button{
     margin-left: 5px;
 }
 
-section .block-edit-panel .add-form-field-panel button:hover {
+section .block-edit-panel .add-form-field-panel button:hover,
+section .block-edit-panel .add-form-field-panel button:focus {
     opacity: 1;
 }
 
@@ -297,20 +299,24 @@ section .block-edit-panel .add-chk-box {
 }
 
 section .block-edit-panel .form-field:not(:last-child) {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 section .block-edit-panel .question {
-    padding: 5px;
+    padding: 5px 0 5px 5px;
+    border-bottom: 1px solid #c3c3c3;
 }
 
 section .block-edit-panel .question:focus-within  {
-    border-bottom: #60269e93 solid 2px;
+    border-left: 3px solid var(--inno-purple);
+    padding-left: 8px;
+    background-image: linear-gradient(to right, #60269e10 , transparent);
 }
 
 section .block-edit-panel .question input {
-    width: 90%;
+    width: 100%;
     font-size: 20px;
+    flex-grow: 1;
 }
 
 section .block-edit-panel .question input::placeholder {
@@ -323,23 +329,41 @@ section .block-edit-panel .answer-list {
     list-style: none;
 }
 
+section .block-edit-panel .answer-list .list-item {
+    margin-top: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+section .block-edit-panel .answer-list input[type="text"] {
+    /* width: 91%; */
+    font-size: 15px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #c3c3c3;
+    padding: 3px;
+    flex-grow: 7;
+}
+
 section .block-edit-panel .answer-list input[type="radio"],
 section .block-edit-panel .answer-list input[type="checkbox"] {
     margin-right: 8px;
+    flex-grow: 1;
 }
 
 section .block-edit-panel .answer-list input::placeholder {
     color: rgb(196, 196, 196);
 }
 
-section .block-edit-panel .answer-list input[type="text"] {
-    width: 80%;
-    font-size: 15px;
+section .block-edit-panel .answer-list input[type="text"]:focus {
+    border-left: 3px solid var(--inno-purple);
+    padding-left: 8px;
+    background-image: linear-gradient(to right, #60269e10 , transparent);
 }
 
 section .block-edit-panel .question,
 section .block-edit-panel .answer-list li {
-    position: relative;
+    display: flex;
 }
 
 section .block-edit-panel .remove-form-element,
@@ -354,26 +378,26 @@ section .block-edit-panel .answer-list .add-list-element {
     color: white;
     background-color: rgb(170, 170, 170);
     opacity: 0.6;
-    margin: 5px 0 0 25px;
+    margin: 8px 0 0 30px;
 }
 
 section .block-edit-panel .remove-form-element {
-    display: none;
-    position: absolute;
     color: white;
-    right: 0;
-    top: -3px;
     background-color: rgb(255, 82, 82);
     background-size: 50%;
+    margin: 0 0 0 8px;
+    right: -60px;
+    position: relative;
 }
 
 section .block-edit-panel .question:hover .remove-form-element,
 section .block-edit-panel .answer-list li:hover .remove-form-element {
-    display: inline;
+    right: 0;
 }
 
 section .block-edit-panel .remove-form-element:hover,
-section .block-edit-panel .answer-list .add-list-element:hover {
+section .block-edit-panel .answer-list .add-list-element:hover,
+section .block-edit-panel .answer-list .add-list-element:focus {
     opacity: 1;
 }
 
@@ -391,7 +415,8 @@ section .block-tools button {
     border-radius: 100%;
 }
 
-section .block-tools button:hover {
+section .block-tools button:hover,
+section .block-tools button:focus {
     background-color: #f3f3f3;
 }
 
@@ -411,12 +436,13 @@ section .block-tools .delete {
     background-image: url(img/delete-icon.svg);
 }
 
-section .block-tools .delete:hover {
+section .block-tools .delete:hover,
+section .block-tools .delete:focus {
     background-color: rgba(255, 92, 53, 0.1);
 }
 
 section .block-tools .download {
-    background-image: url(img/download-icon.svg);
+    background-image: url(img/forward.svg);
 }
 
 /* FOOTER */

@@ -15,7 +15,7 @@ function loadBlocks(email) {
               
         projects.forEach(item => {
             var block = addEmptyBlock(),
-                blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];;
+                blockEditPanel = block.getElementsByClassName('block-edit-panel')[0];
 
             blockEditPanel.classList.add('no-animations');
             fillEmptyBlock(block, item.title, item.form_id);
@@ -114,9 +114,16 @@ function addEmptyBlock() {
     var projectNameInput = block.getElementsByTagName('input')[0];
     projectNameInput.focus();    // focus on newly added block's input field
 
-    projectNameInput.onkeydown = function(e) {   // save the project name by pressing 'enter' key
-        if (e.keyCode == 13)
-            saveBlock(block.getElementsByClassName('save')[0]);
+    projectNameInput.onkeydown = function(e) {
+        if (e.keyCode == 13) {  // Enter key pressed
+            var addFormFieldBtn = block.getElementsByClassName('add-form-field')[0];
+            hide(addFormFieldBtn, 'add-form-field-cont');
+        }    
+        else if (e.key == 'Escape') {   // Escape button pressed
+            var deleteBtn = block.getElementsByClassName('delete')[0];
+            deleteBlock(deleteBtn);
+            document.getElementById('add-block').focus();
+        }     
     }
 
     return block;
@@ -132,14 +139,14 @@ function saveBlock(saveBtn) {
         projectNameInput = block.getElementsByTagName('input')[0],
         title = projectNameInput.value;
     
-    if (!blockIsOK())
+    if (!blockIsOK(block))
         return;
     
     projectNameInput.disabled = true;
 
     block.classList.remove('empty');
 
-    const form = block.getElementsByTagName('form')[0],
+    const form = block.getElementsByClassName('block-edit-panel')[0],
           fields = getFormFields(form);
     
     var promise = createForm(title, fields),
@@ -162,70 +169,75 @@ function saveBlock(saveBtn) {
         block.getElementsByClassName('block-tools')[0].replaceWith(blockTools);
         preload.style.display = "none";
     });
+}
 
-    /**
-     * Check whether there are some conditions obstructing the correct block creation process.
-     */
-    function blockIsOK() {
-        if (titleIsEmpty()) {
-            alert("Your project name is empty! Fill in something.");
-            projectNameInput.value = "";
-            return false;
-        }
-        else if (thereAreNoFields()) {
-            alert("There are no fields in the form! Add at least one.");
-            return false;
-        }
-        else if (thereAreEmptyFields()) {
-            alert("There are empty fields in the form! Remove them or fill in.");
-            return false;
-        }
-        else if (thereAreEmptyChecklists()) {
-            alert("There are checklists without any choice! Add at least one choice.");
-            return false;
-        }
+/**
+ * Check whether there are some conditions obstructing the correct block creation process.
+ * @param {HTMLElement} block - Block to be checked.
+ * @returns Nothing, just check necessary conditions.
+ */
+function blockIsOK(block) {
+    var projectNameInput = block.getElementsByTagName('input')[0],
+        title = projectNameInput.value;
 
-        return true;
+    if (titleIsEmpty()) {
+        alert("Your project name is empty! Fill in something.");
+        projectNameInput.value = "";
+        return false;
+    }
+    else if (thereAreNoFields()) {
+        alert("There are no fields in the form! Add at least one.");
+        return false;
+    }
+    else if (thereAreEmptyFields()) {
+        alert("There are empty fields in the form! Remove them or fill in.");
+        return false;
+    }
+    else if (thereAreEmptyChecklists()) {
+        alert("There are checklists without any choice! Add at least one choice.");
+        return false;
+    }
 
-        function titleIsEmpty() {
-            return title.replace(/\s/g, '') == "";
-        }
+    return true;
 
-        function thereAreNoFields() {
-            return block.getElementsByClassName('block-edit-panel')[0].children.length == 1;
-        }
+    function titleIsEmpty() {
+        return title.replace(/\s/g, '') == "";
+    }
 
-        function thereAreEmptyFields() {
-            const fieldTitles = block.getElementsByClassName('question');
+    function thereAreNoFields() {
+        return block.getElementsByClassName('block-edit-panel')[0].children.length == 1;
+    }
 
-            for (let title of fieldTitles) {
-                if (title.firstElementChild.value.replace(/\s/g, '') == "") {
-                    title.firstElementChild.value = "";
-                    return true;
-                }
+    function thereAreEmptyFields() {
+        const fieldTitles = block.getElementsByClassName('question');
+
+        for (let title of fieldTitles) {
+            if (title.firstElementChild.value.replace(/\s/g, '') == "") {
+                title.firstElementChild.value = "";
+                return true;
             }
+        }
 
-            const listElTitles = block.getElementsByClassName('list-item');
-            
-            for (let elTitle of listElTitles) {
-                if (elTitle.children[1].value.replace(/\s/g, '') == "") {
-                    elTitle.children[1].value = "";
-                    return true;
-                }
+        const listElTitles = block.getElementsByClassName('list-item');
+        
+        for (let elTitle of listElTitles) {
+            if (elTitle.children[1].value.replace(/\s/g, '') == "") {
+                elTitle.children[1].value = "";
+                return true;
             }
-
-            return false;
         }
 
-        function thereAreEmptyChecklists() {
-            const answerLists = block.getElementsByClassName('answer-list');
+        return false;
+    }
 
-            for (let list of answerLists)
-                if (list.children.length == 1)
-                    return true;
-            
-            return false;
-        }
+    function thereAreEmptyChecklists() {
+        const answerLists = block.getElementsByClassName('answer-list');
+
+        for (let list of answerLists)
+            if (list.children.length == 1)
+                return true;
+        
+        return false;
     }
 }
 
@@ -263,7 +275,7 @@ function deleteBlock(deleteBtn) {
  * @returns {Promise} Promise file with some data got from the request.
  */
 async function makeRequest(url, body={}, method, mode) {
-    const token = "EY4YA4XgJwuQyVLUVKNpW2inHBqyW6vZWzYD5D4a3DLF",
+    const token = "DtnUFUj7Ay9bN56vSzsvNnHHivaa2hZGWt2agNmRjspa",
           data = {
               "method" : method,
               "headers" : {
@@ -308,6 +320,9 @@ function updateForm(btn) {
     const block = getGrandParent(btn),
           blockTitle = block.getElementsByClassName('block-title')[0].firstElementChild;
 
+    if (!blockIsOK(block))
+        return;
+
     if (btn.classList.contains('edit')) {
         btn.classList.replace('edit', 'save');
         btn.title = "Save changes";
@@ -316,7 +331,7 @@ function updateForm(btn) {
     }
     else if (btn.classList.contains('save')) {
         const preload = document.getElementById('preload'),
-              form = block.getElementsByTagName('form')[0],
+              form = block.getElementsByClassName('block-edit-panel')[0],
               formId = block.dataset.formId,
               url = "https://api.typeform.com/forms/" + formId,
               data = {
@@ -432,6 +447,7 @@ function copyToClipboard(btn) {
     document.execCommand('copy');
     document.body.removeChild(el);
     alert("The link to the form is copied to the clipboard");
+    window.open(link);
 };
 
 /**
@@ -454,11 +470,18 @@ function sendDataset(btn) {
  */
 function hide(btn, blockClass) {
     block = getGrandParent(btn).getElementsByClassName(blockClass)[0];
+
     if (!block.classList.contains('hidden')) {
+        if (btn.classList.contains('add-form-field'))
+            btn.title = "Add form field";
+
         block.classList.add("hidden");
         btn.classList.add("activated");
     }
     else {
+        if (btn.classList.contains('add-form-field'))
+            btn.title = "Close";
+
         block.classList.remove("hidden");
         btn.classList.remove("activated");
     }
@@ -520,4 +543,21 @@ function removeFormElement(btn, type) {
  */
 function getGrandParent(elem) {
     return elem.parentElement.parentElement;
+}
+
+/**
+ * Cancel the field creation by removing it.
+ * @param {HTMLElement} inField - Field to be removed.
+ * @param {Event} e - Escape key handle event called the function.
+ * @returns {void} Nothing, just perform necessary actions.
+ */
+function cancelField(inField, e) {
+    if (e.key == 'Escape') {
+        var field = getGrandParent(inField);
+        
+        if (inField.parentElement.classList.contains('list-item'))
+            field = inField.parentElement;
+
+        field.remove();
+    }
 }
