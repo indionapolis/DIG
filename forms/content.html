@@ -1,8 +1,8 @@
 <section>
     <div class="container">
-        <div id="add-block" class="block" onclick="addEmptyBlock();">
+        <button id="add-block" class="block" onclick="addEmptyBlock();">
             <div>+</div>
-        </div>
+        </button>
     </div>
 </section>
 
@@ -11,7 +11,7 @@
         <div class="block empty">
             <div class="block-title"><input type="text" placeholder="Project name" maxlength="69" autofocus></div>
             
-            <form class="block-edit-panel hidden">
+            <div class="block-edit-panel">
                 <div class="add-form-field-panel">
                     <button class="add-form-field activated" onclick="hide(this, 'add-form-field-cont');" title="Add form field"  form="">+</button>
                     <div class="add-form-field-cont hidden">
@@ -20,10 +20,10 @@
                         <button class="add-chk-box" onclick="addFormField(this, 'check');" title="Add checkbox question" form=""></button>
                     </div>
                 </div>
-            </form>
+            </div>
 
             <div class="block-tools">
-                <button class="save" title="Create a form" onclick="saveBlock(this);"></button>
+                <button class="save" title="Save the form" onclick="saveBlock(this);"></button>
                 <button class="delete" title="Delete form" onclick="deleteBlock(this);"></button>
             </div>
         </div>
@@ -32,8 +32,8 @@
     <template id="form-text-field-tmpl">
         <div class="form-field text">
             <div class="question">
-                <input type="text" placeholder="Question">
-                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
+                <input type="text" placeholder="Text question" onkeydown="cancelField(this, event);">
+                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question"  form="" tabindex="-1">-</button>
             </div>
         </div>
     </template>
@@ -41,14 +41,14 @@
     <template id="form-radio-field-tmpl">
         <div class="form-field radio">
             <div class="question">
-                <input type="text" placeholder="Question">
-                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
+                <input type="text" placeholder="Question" onkeydown="cancelField(this, event);">
+                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" form="" tabindex="-1">-</button>
             </div>
 
             <ul class="answer-list">
                 <li class="list-item">
-                    <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element" form="">-</button>
+                    <input type="radio" disabled><input type="text" placeholder="Answer" name="label" onkeydown="cancelField(this, event);">
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element" form="" tabindex="-1">-</button>
                 </li>
 
                 <li><button class="add-list-element" onclick="addListElement(this, 'radio');" title="Add list element" form="">+</button></li>
@@ -59,32 +59,32 @@
     <template id="form-chk-box-field-tmpl">
         <div class="form-field check-box">
             <div class="question">
-                <input type="text" placeholder="Question">
-                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" name="title" form="">-</button>
+                <input type="text" placeholder="Question" onkeydown="cancelField(this, event);">
+                <button class="remove-form-element" onclick="removeFormElement(this, 'question');" title="Remove question" form="" tabindex="-1">-</button>
             </div>
 
             <ul class="answer-list">
                 <li class="list-item">
-                    <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
-                    <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+                    <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label" onkeydown="cancelField(this, event);">
+                    <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="" tabindex="-1">-</button>
                 </li>
 
-                <li><button class="add-list-element" onclick="addListElement(this, 'checkbox');" title="Add list element"  form="">+</button></li>
+                <li><button class="add-list-element" onclick="addListElement(this, 'checkbox');" title="Add list element" form="">+</button></li>
             </ul>
         </div>
     </template>
 
     <template id="radio-tmpl">
         <li class="list-item">
-            <input type="radio" disabled><input type="text" placeholder="Answer" name="label">
-            <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="">-</button>
+            <input type="radio" disabled><input type="text" placeholder="Answer" name="label" onkeydown="cancelField(this, event);">
+            <button class="remove-form-element" onclick="removeFormElement(this, 'radio');" title="Remove list element"  form="" tabindex="-1">-</button>
         </li>
     </template>
 
     <template id="checkbox-tmpl">
         <li class="list-item">
-            <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label">
-            <button class="remove-form-element" onclick="removeFormElement(this, 'checkbox');" title="Remove list element"  form="">-</button>
+            <input type="checkbox" disabled><input type="text" placeholder="Answer" name="label" onkeydown="cancelField(this, event);">
+            <button class="remove-form-element" onclick="removeFormElement(this, 'checkbox');" title="Remove list element"  form="" tabindex="-1">-</button>
         </li>
     </template>
 
@@ -92,7 +92,7 @@
         <div class="block-tools">
             <button class="share" onclick="copyToClipboard(this);" title="Get the link on form"></button>
             <button class="edit" onclick="updateForm(this);" title="Edit form"></button>
-            <button class="download" onclick="sendDataset(this);" title="Download dataset"></button>
+            <button class="download" onclick="sendDataset(this);" title="Go to division"></button>
             <button class="delete" onclick="deleteBlock(this);" title="Delete form"></button>
         </div>
     </template>
