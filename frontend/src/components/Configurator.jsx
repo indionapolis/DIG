@@ -90,7 +90,7 @@ class Configurator extends Component {
               <div style={{display: "flex", flexDirection: "row", alignItems: 'center'}}>
                 <input className="project_name"
                        type="text"
-                       placeholder="Введите название проекта"
+                       placeholder="Type the project name"
                        onKeyPress={(e) => {if (e.key === "Enter") this.onTeamAdd(projectIndex)}}
                        onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}
                        defaultValue={this.props.config[projectIndex].name} />
@@ -123,7 +123,7 @@ class Configurator extends Component {
                     <div style={{padding: "7px 10px"}}>
                       Название:
                       <input type="text"
-                             placeholder={"Команда #" + teamIndex}
+                             placeholder={"Team #" + teamIndex}
                              onBlur={(e) => this.onTeamNameChange(projectIndex, teamIndex, e.currentTarget.value)}
                              defaultValue={this.props.config[projectIndex].teams[teamIndex].name} />
                     </div>
@@ -144,7 +144,7 @@ class Configurator extends Component {
                       <div className="input_skill_wrapper">
                         <input type="text"
                                className="new_skill"
-                               placeholder="Новый скилл"
+                               placeholder="New Skill"
                                id={`P${projectIndex}T${teamIndex}skill_input`}
                                onBlur={(e) => {
                                  document.getElementById(`P${projectIndex}T${teamIndex}skill_suggester`).style.display = 'none';
