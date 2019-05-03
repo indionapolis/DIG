@@ -1,23 +1,10 @@
-.meta_info {
-  height: 100%;
-  flex-direction: column;
-  display: flex;
-  justify-content: center;
-}
-
-.meta_info_element {
-  color: #2f2f2f;
-  padding: 2px;
-  margin-left: 15px;
-}
-
-.meta_info_element b {
-  color: #000;
-}
-
 .button_decorated {
-  margin-top: 20px;
-  align-self: flex-start;
+  margin-top: 40px;
+  margin-right: 10px;
+}
+
+.button_decorated:last-child {
+  margin-right: 0;
 }
 
 .select_data {

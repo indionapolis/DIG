@@ -5,26 +5,28 @@ class MetaInfo extends Component {
   render() {
     return (
       <div className="meta_info">
-        <div style={{marginBottom: '15px'}}>
-          Check yourself:
+        <div className="meta_info_row">
+          <div className="meta_info_title">File name:</div>
+          <div className="meta_info_element">{this.props.metadata.name}</div>
         </div>
-        <div className="meta_info_element">
-          <b>File name:</b> {this.props.metadata.name}
+
+        <div className="meta_info_row">
+          <div className="meta_info_title">Amount of lines:</div>
+          <div className="meta_info_element">{this.props.metadata.len}</div>
         </div>
-        <div className="meta_info_element">
-          <b>Number of lines:</b> {this.props.metadata.len}
+
+        <div className="meta_info_row">
+          <div className="meta_info_title">Columns:</div>
+          <div className="meta_info_element">
+            {this.props.metadata.columns.map((item) => {
+              return <span>{item}<br/></span>
+            })}
+          </div>
         </div>
-        <div className="meta_info_element">
-          <b>Columns:</b> {this.props.metadata.columns.join(", ")}
-        </div>
-        <div>
-          <button className="button_decorated" onClick={this.props.goToPrevState}>
-            Go back
-          </button>
-          <button className="button_decorated button_transparent" onClick={this.props.goToConfig}>
-            Go to configirator
-          </button>
-        </div>
+
+        <button className="button_decorated button_transparent" onClick={this.props.goToConfig}>
+          Go to configirator
+        </button>
       </div>
     );
   }

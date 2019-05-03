@@ -28,13 +28,12 @@
 }
 
 .button_decorated {
-  height: 30px;
-  padding: 3px 15px;
-  font-size: 13px;
+  padding: 7px 20px;
+  font-size: 16px;
   background: #2db224;
   color: #fff;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 20px;
   font-weight: bold;
 
   border-style: none;
