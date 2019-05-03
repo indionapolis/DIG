@@ -1,13 +1,14 @@
-* {
+/* * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-}
+} */
 
 .App {
-  font-family: "Helvetica Neue", serif;
+  /* font-family: "Helvetica Neue", serif; */
   font-size: 14px;
   height: 100%;
+  background-color: #f8f8f8;
 }
 
 .header {
@@ -17,7 +18,7 @@
   color: #3f3f3f;
 
   font-size: 32px;
-  font-family: "Helvetica Neue", serif;
+  /* font-family: "Helvetica Neue", serif; */
   font-weight: 300;
 }
 
@@ -28,13 +29,12 @@
 }
 
 .button_decorated {
-  height: 30px;
-  padding: 3px 15px;
-  font-size: 13px;
+  padding: 7px 20px;
+  font-size: 16px;
   background: #2db224;
   color: #fff;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 20px;
   font-weight: bold;
 
   border-style: none;

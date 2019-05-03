@@ -20,24 +20,37 @@ class AppRoutes extends Component {
       pageName = "0. The DIG";
       content = <UploadDataPage {...this.props} />
     } else if (currentState === "0.1") {
-      pageName = "1. Проверьте себя";
+      pageName = "1. Check yourself";
       content = <MetaInfo {...this.props} />
     } else if (currentState === '1') {
-      pageName = "2. Конфигуратор";
+      pageName = "2. Configurator";
       content = <Configurator {...this.props} />
     } else if (currentState === '2') {
-      pageName = "3. Результат разделения на команды";
+      pageName = "3. Result of division";
       content = <Results {...this.props} />
     }
 
     return (
       <div className="App">
-        <div className="header">
-          {pageName}
-        </div>
-        <div className="main">
-          {content}
-        </div>
+        <header>
+          <div className="container">
+            <div className="title">{pageName}</div>
+          </div>
+        </header>
+
+        <section>
+          <div className="container">
+            {content}
+          </div>
+        </section>
+
+        <footer>
+          <div className="container">
+            <a href="https://github.com/indionapolis/DIG" target="_blank">GitHub</a>
+            <br />
+            Group Breakdown © 2019
+          </div>
+        </footer>
       </div>
     );
   }
