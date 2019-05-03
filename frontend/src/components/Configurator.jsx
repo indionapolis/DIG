@@ -141,29 +141,31 @@ class Configurator extends Component {
                           {skillData}
                         </div>
                       ))}
-                      <input  type="text"
-                              className="new_skill"
-                              placeholder="New skill"
-                              id={`P${projectIndex}T${teamIndex}skill_input`}
-                              onBlur={(e) => {
-                                document.getElementById(`P${projectIndex}T${teamIndex}skill_suggester`).style.display = 'none';
-                                // if (e.currentTarget.value.length > 0) {
-                                //   this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
-                                //   e.currentTarget.value = "";
-                                // }
-                              }}
-                              autoComplete="off"
-                              spellCheck="false"
-                              onChange={() => this.onSuggestion(projectIndex, teamIndex)}
-                              onKeyPress={(e) => {
-                                if (e.key === "Enter" && e.currentTarget.value.length > 0) {
-                                  this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
-                                  e.currentTarget.value = "";
-                                }
-                              }}
-                      />
-                      <div className="skill_suggestions" id={`P${projectIndex}T${teamIndex}skill_suggester`}>
-                        cXc<br/>kek<br/>jej<br/>lol
+                      <div className="input_skill_wrapper">
+                        <input  type="text"
+                                className="new_skill"
+                                placeholder="New skill"
+                                id={`P${projectIndex}T${teamIndex}skill_input`}
+                                onBlur={(e) => {
+                                  document.getElementById(`P${projectIndex}T${teamIndex}skill_suggester`).style.display = 'none';
+                                  // if (e.currentTarget.value.length > 0) {
+                                  //   this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
+                                  //   e.currentTarget.value = "";
+                                  // }
+                                }}
+                                autoComplete="off"
+                                spellCheck="false"
+                                onChange={() => this.onSuggestion(projectIndex, teamIndex)}
+                                onKeyPress={(e) => {
+                                  if (e.key === "Enter" && e.currentTarget.value.length > 0) {
+                                    this.onSkillAdd(projectIndex, teamIndex, e.currentTarget.value);
+                                    e.currentTarget.value = "";
+                                  }
+                                }}
+                        />
+                        <div className="skill_suggestions" id={`P${projectIndex}T${teamIndex}skill_suggester`}>
+                          cXc<br/>kek<br/>jej<br/>lol
+                        </div>
                       </div>
                     </div>
                   </div>
