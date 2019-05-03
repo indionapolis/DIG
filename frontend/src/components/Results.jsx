@@ -74,13 +74,13 @@ class Results extends Component {
               {this.props.resultConfig[projectIndex].teams.map((teamData, teamIndex) => (
                 <div key={projectIndex + "team" + teamIndex} className="team_element">
                   <div style={{padding: "7px 10px"}}>
-                    Команда:
+                    Team:
                     <div style={{fontWeight: '300', marginLeft: '25px'}}>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].name}
                     </div>
                   </div>
                   <div style={{padding: "7px 10px"}}>
-                    Скиллы:
+                    Skills:
                     <div style={{marginLeft: '22px'}}>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].skills.map((skillData, skillIndex) => (
                         <div key={projectIndex + "team" + teamIndex + "skill" + skillIndex} className="card skill">
@@ -90,7 +90,7 @@ class Results extends Component {
                     </div>
                   </div>
                   <div style={{padding: "7px 10px"}}>
-                    Участники:
+                    Team members:
                     <div style={{fontWeight: '300', marginLeft: '25px'}}>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].members
                         .map((d, xyz) => (<div key={`lol+kek${d}+-${xyz}`}>{d["What's your name?"].toString()}</div>))}
@@ -106,10 +106,10 @@ class Results extends Component {
       <div className='division_result'>
         {res}
         <button className="button_decorated" onClick={this.props.goToPrevState}>
-          Назад
+          Go back
         </button>
         <button className="button_decorated button_no_margin button_transparent" onClick={this.onFileDownload}>
-          Скачать датасет
+          Download dataset
         </button>
       </div>
     );

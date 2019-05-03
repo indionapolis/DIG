@@ -115,14 +115,14 @@ class App extends Component {
       let { name } = data;
       this.setState({
         config: [...config, {
-          name: name ? name : `Проект#${config.length}`,
+          name: name ? name : `Project#${config.length}`,
           teams: []
         }]
       })
     } else if (action === "addTeam") {
       let { name } = data;
       config[data].teams = [...config[data].teams, {
-        name: name ? name : `Команда#${config[data].teams.length}`,
+        name: name ? name : `Team#${config[data].teams.length}`,
         size: "",
         skills: []
       }];
@@ -171,7 +171,7 @@ class App extends Component {
         config
       })
     }
-    console.log(config)
+    // console.log(config)
   }
 
   onLoginEnter() {

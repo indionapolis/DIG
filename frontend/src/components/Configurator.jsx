@@ -90,13 +90,13 @@ class Configurator extends Component {
               <div style={{display: "flex", flexDirection: "row", alignItems: 'center'}}>
                 <input className="project_name"
                        type="text"
-                       placeholder="Введите название проекта"
+                       placeholder="Write the project name"
                        onKeyPress={(e) => {if (e.key === "Enter") this.onTeamAdd(projectIndex)}}
                        onBlur={(e) => this.onProjectNameChange(projectIndex, e.currentTarget.value)}
                        defaultValue={this.props.config[projectIndex].name} />
                 <button onClick={() => this.onTeamAdd(projectIndex)}
                         className="button_decorated button_no_margin">
-                  Добавить команду
+                  Add team
                 </button>
                 <button className="button_decorated button_no_margin remove_project"
                         onClick={() => this.onProjectRemove(projectIndex)}>
@@ -121,21 +121,21 @@ class Configurator extends Component {
                             onClick={() => this.onTeamRemove(projectIndex, teamIndex)}/>
                     </div>
                     <div style={{padding: "7px 10px"}}>
-                      Название:
+                      Team name:
                       <input type="text"
-                             placeholder={"Команда #" + teamIndex}
+                             placeholder={"Team #" + teamIndex}
                              onBlur={(e) => this.onTeamNameChange(projectIndex, teamIndex, e.currentTarget.value)}
                              defaultValue={this.props.config[projectIndex].teams[teamIndex].name} />
                     </div>
                     <div style={{padding: "7px 10px"}}>
-                      Размер:
+                      Size:
                       <input type="text" placeholder="0"
                              onBlur={(e) => this.onTeamSizeChange(projectIndex, teamIndex, e.currentTarget.value)}
                              className="users_count"
                              defaultValue={this.props.config[projectIndex].teams[teamIndex].size}/>
                     </div>
                     <div style={{padding: "7px 10px"}}>
-                      Скиллы:
+                      Skills:
                       {this.props.config[projectIndex].teams[teamIndex].skills.map((skillData, skillIndex) => (
                         <div key={projectIndex + "team" + teamIndex + "skill" + skillIndex} className="card skill">
                           {skillData}
@@ -144,7 +144,7 @@ class Configurator extends Component {
                       <div className="input_skill_wrapper">
                         <input type="text"
                                className="new_skill"
-                               placeholder="Новый скилл"
+                               placeholder="New skill"
                                id={`P${projectIndex}T${teamIndex}skill_input`}
                                onBlur={(e) => {
                                  document.getElementById(`P${projectIndex}T${teamIndex}skill_suggester`).style.display = 'none';
@@ -178,15 +178,15 @@ class Configurator extends Component {
           <button className="button_decorated button_no_margin"
                   onClick={this.props.goToPrevState}
                   style={{width: '80px'}}>
-            Назад
+            Go back
           </button>
           <button onClick={this.onProjectAdd}
                   className="button_decorated button_no_margin"
                   style={{width: '150px'}}>
-            Добавить проект
+            Add project
           </button>
           <button onClick={this.props.goToRetrieveResults} className="button_decorated button_no_margin button_transparent divide">
-            Разделить людей на команды
+            Divide people on teams
           </button>
         </div>
       </div>
