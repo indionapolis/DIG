@@ -32,12 +32,25 @@ class AppRoutes extends Component {
 
     return (
       <div className="App">
-        <div className="header">
-          {pageName}
-        </div>
-        <div className="main">
-          {content}
-        </div>
+        <header>
+          <div className="container">
+            <div className="title">{pageName}</div>
+          </div>
+        </header>
+
+        <section>
+          <div className="container">
+            {content}
+          </div>
+        </section>
+
+        <footer>
+          <div className="container">
+            <a href="https://github.com/indionapolis/DIG" target="_blank">GitHub</a>
+            <br />
+            Group Breakdown © 2019
+          </div>
+        </footer>
       </div>
     );
   }
