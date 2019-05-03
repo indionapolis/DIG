@@ -1,12 +1,3 @@
-.button_decorated {
-  margin-top: 40px;
-  margin-right: 10px;
-}
-
-.button_decorated:last-child {
-  margin-right: 0;
-}
-
 .select_data {
   height: 60%;
   flex: 1;
@@ -32,4 +23,12 @@
   box-shadow: 0px 0px 4px rgba(1, 1, 1, 0.05);
   border-color: rgba(47, 181, 36, 0.41);
   border-width: 2px;
+}
+
+.button_decorated {
+  margin-right: 10px;
+}
+
+.button_decorated:last-child {
+  margin-right: 0;
 }

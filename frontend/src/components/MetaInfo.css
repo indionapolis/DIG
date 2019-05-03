@@ -39,3 +39,7 @@
 .meta_info_element {
   text-align: left;
 }
+
+.meta_info .button_decorated {
+  margin-top: 40px;
+}

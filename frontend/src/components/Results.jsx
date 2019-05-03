@@ -81,7 +81,7 @@ class Results extends Component {
                   </div>
                   <div style={{padding: "7px 10px"}}>
                     Skills:
-                    <div style={{marginLeft: '22px'}}>
+                    <div>
                       {this.props.resultConfig[projectIndex].teams[teamIndex].skills.map((skillData, skillIndex) => (
                         <div key={projectIndex + "team" + teamIndex + "skill" + skillIndex} className="card skill">
                           {skillData}
