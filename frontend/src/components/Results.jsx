@@ -59,6 +59,10 @@ class Results extends Component {
     // window.open(`${process.env.REACT_APP_BACKEND_URL}/download`, "blank");
   }
 
+  goToForms() {
+    window.location.replace('http://localhost/forms/');
+  }
+
   render() {
     let res = this.props.resultConfig.length === 0
       ? null
@@ -108,8 +112,13 @@ class Results extends Component {
         <button className="button_decorated" onClick={this.props.goToPrevState}>
           Go back
         </button>
+
         <button className="button_decorated button_no_margin button_transparent" onClick={this.onFileDownload}>
           Download dataset
+        </button>
+
+        <button className="button_decorated" onClick={this.goToForms}>
+          Go to forms
         </button>
       </div>
     );

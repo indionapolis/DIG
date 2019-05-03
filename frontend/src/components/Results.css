@@ -1,6 +1,11 @@
 .division_result {
   padding-top: 80px;
   width: 100%;
+  display: flex;
+}
+
+.division_result button:last-child{
+  margin-left: auto;
 }
 
 .text {
